@@ -62,7 +62,6 @@ function App() {
       </ToastProvider>
     </ErrorBoundary>
   );
-  onShowDashboard?: () => void;
 }
 
 export default App;
