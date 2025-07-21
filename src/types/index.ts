@@ -130,3 +130,18 @@ export interface SearchFilters {
   maxSalary?: number;
   sortBy?: 'newest' | 'closest' | 'salary';
 }
+
+// Worker interface for featured workers display
+export interface Worker {
+  id: string;
+  name: string;
+  skill: string;
+  location: string;
+  experience: string;
+  rating: number;
+  totalRatings: number;
+  profileImage: string;
+  isVerified: boolean;
+  availability: string;
+  hourlyRate: string;
+}

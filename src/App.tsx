@@ -7,7 +7,7 @@ import Layout from './components/common/Layout';
 import AuthModal from './components/auth/AuthModal';
 import EmployerDashboard from './components/dashboard/EmployerDashboard';
 import JobSeekerDashboard from './components/dashboard/JobSeekerDashboard';
-import Hero from './components/landing/Hero';
+import HomePage from './components/landing/HomePage';
 import OfflineIndicator from './components/features/OfflineIndicator';
 
 const AppContent: React.FC = () => {
@@ -36,7 +36,7 @@ const AppContent: React.FC = () => {
 
   return (
     <Layout>
-      <Hero 
+      <HomePage 
         onOpenAuthModal={openAuthModal} 
         onShowDashboard={() => setShowDashboard(true)}
       />

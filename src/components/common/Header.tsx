@@ -39,6 +39,12 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
+              <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+                Home
+              </a>
+              <a href="#featured-workers" className="text-gray-700 hover:text-blue-600 transition-colors">
+                Browse Workers
+              </a>
               {isAuthenticated ? (
                 <>
                   <button 
@@ -122,14 +128,23 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
               ) : (
                 <>
                   <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
-                    Find Jobs
-                  </a>
-                  <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
                     Post Job
                   </a>
+                  <button
+                    onClick={() => setShowCoinPurchase(true)}
+                    className="text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    Buy Credits
+                  </button>
                   <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
                     About
                   </a>
+                  <button
+                    onClick={() => {/* Open auth modal */}}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Login / Signup
+                  </button>
                 </>
               )}
             </nav>
@@ -201,14 +216,32 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                 ) : (
                   <>
                     <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
-                      Find Jobs
+                      Home
+                    </a>
+                    <a href="#featured-workers" className="text-gray-700 hover:text-blue-600 transition-colors">
+                      Browse Workers
                     </a>
                     <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
                       Post Job
                     </a>
+                    <button
+                      onClick={() => {
+                        setShowCoinPurchase(true);
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                    >
+                      Buy Credits
+                    </button>
                     <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
                       About
                     </a>
+                    <button
+                      onClick={() => {/* Open auth modal */ setIsMenuOpen(false);}}
+                      className="text-left bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Login / Signup
+                    </button>
                   </>
                 )}
               </nav>
