@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Users, ArrowRight, Star, Phone, MessageCircle, Shield, Clock, Zap, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, MapPin, Users, ArrowRight, Star, Phone, MessageCircle, Shield, Clock, Zap, CheckCircle, Briefcase, TrendingUp, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import FeaturedWorkers from './FeaturedWorkers';
 import CreditPacks from './CreditPacks';
 import HowItWorks from './HowItWorks';
+import { getFeaturedCategories } from '../../lib/jobCategories';
 
 interface HomePageProps {
   onOpenAuthModal: (role?: 'employer' | 'jobseeker') => void;
@@ -150,6 +152,107 @@ const HomePage: React.FC<HomePageProps> = ({ onOpenAuthModal, onShowDashboard })
                 <Search className="h-5 w-5 mr-2" />
                 Search
               </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Browse Jobs Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-teal-100 text-blue-800 mb-6 shadow-sm">
+              <Briefcase className="h-4 w-4 mr-2" />
+              Browse by Job Category
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Find Jobs in
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600 block">
+                Popular Categories
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Explore thousands of job opportunities across India's most in-demand sectors. From skilled trades to service jobs, find the perfect role for your skills.
+            </p>
+          </div>
+          
+          {/* Featured Categories Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            {getFeaturedCategories().slice(0, 16).map((category, index) => (
+              <Link
+                key={category.id}
+                to={`/jobs`}
+                className="group cursor-pointer"
+              >
+                <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:border-blue-200 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-50 to-teal-50 rounded-bl-full opacity-50"></div>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-4xl group-hover:scale-125 transition-transform duration-500 relative z-10">
+                      {category.icon}
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-green-700 font-bold bg-gradient-to-r from-green-100 to-emerald-100 px-3 py-1.5 rounded-full shadow-sm">
+                        {category.growth} growth
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-bold text-gray-900 mb-3 text-xl group-hover:text-blue-600 transition-colors duration-300">
+                    {category.name}
+                  </h3>
+                  
+                  <p className="text-base text-blue-600 font-bold mb-4">
+                    {category.jobCount.toLocaleString()} jobs
+                  </p>
+                  
+                  <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                    {category.description}
+                  </p>
+                  
+                  <div className="flex items-center text-blue-600 text-sm font-bold group-hover:text-blue-700 transition-colors duration-300">
+                    <span>Explore Jobs</span>
+                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* View All Button */}
+          <div className="text-center">
+            <Link
+              to="/jobs"
+              className="group inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-xl hover:from-blue-700 hover:to-teal-700 transition-all duration-300 font-bold text-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              <TrendingUp className="h-6 w-6 mr-3" />
+              View All 100+ Job Categories
+              <ChevronRight className="h-6 w-6 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
+            </Link>
+            <p className="text-gray-600 text-sm mt-4">
+              Discover opportunities in electricians, drivers, cooks, cleaners, security, and many more categories
+            </p>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="mt-16 bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+              <div>
+                <div className="text-4xl font-bold text-blue-600 mb-2">100+</div>
+                <div className="text-gray-600 font-medium">Job Categories</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-green-600 mb-2">25,000+</div>
+                <div className="text-gray-600 font-medium">Active Jobs</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-purple-600 mb-2">500+</div>
+                <div className="text-gray-600 font-medium">Cities Covered</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-orange-600 mb-2">95%</div>
+                <div className="text-gray-600 font-medium">Job Match Rate</div>
+              </div>
             </div>
           </div>
         </div>

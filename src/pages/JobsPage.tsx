@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
 import { Search, MapPin, Filter, Briefcase, TrendingUp, ChevronRight, Clock, DollarSign, Users } from 'lucide-react';
-
-interface JobCategory {
-  id: string;
-  name: string;
-  icon: string;
-  jobCount: number;
-  growth: string;
-  averageSalary: string;
-  description: string;
-  slug: string;
-}
+import { getAllCategories, searchCategories, JobCategoryData } from '../lib/jobCategories';
 
 const JobsPage: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -19,128 +9,7 @@ const JobsPage: React.FC = () => {
   const [selectedExperience, setSelectedExperience] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const jobCategories: JobCategory[] = [
-    {
-      id: '1',
-      name: 'Electricians',
-      icon: '⚡',
-      jobCount: 1247,
-      growth: '+18%',
-      averageSalary: '₹15-25K',
-      description: 'Electrical installation, maintenance, and repair jobs',
-      slug: 'electricians'
-    },
-    {
-      id: '2',
-      name: 'Plumbers',
-      icon: '🔧',
-      jobCount: 892,
-      growth: '+22%',
-      averageSalary: '₹12-20K',
-      description: 'Plumbing installation, repair, and maintenance work',
-      slug: 'plumbers'
-    },
-    {
-      id: '3',
-      name: 'Delivery & Logistics',
-      icon: '🚚',
-      jobCount: 2156,
-      growth: '+35%',
-      averageSalary: '₹10-18K',
-      description: 'Delivery partners, drivers, and logistics support',
-      slug: 'delivery-logistics'
-    },
-    {
-      id: '4',
-      name: 'Housekeeping & Cleaning',
-      icon: '🧹',
-      jobCount: 1789,
-      growth: '+28%',
-      averageSalary: '₹8-15K',
-      description: 'Residential and commercial cleaning services',
-      slug: 'housekeeping-cleaning'
-    },
-    {
-      id: '5',
-      name: 'Security Guards',
-      icon: '🛡️',
-      jobCount: 1234,
-      growth: '+15%',
-      averageSalary: '₹12-18K',
-      description: 'Security services for residential and commercial properties',
-      slug: 'security-guards'
-    },
-    {
-      id: '6',
-      name: 'Cooks & Chefs',
-      icon: '👨‍🍳',
-      jobCount: 987,
-      growth: '+25%',
-      averageSalary: '₹10-22K',
-      description: 'Restaurant, home, and catering cooking positions',
-      slug: 'cooks-chefs'
-    },
-    {
-      id: '7',
-      name: 'Office Assistants',
-      icon: '📋',
-      jobCount: 756,
-      growth: '+12%',
-      averageSalary: '₹8-16K',
-      description: 'Administrative support and office assistance roles',
-      slug: 'office-assistants'
-    },
-    {
-      id: '8',
-      name: 'Drivers',
-      icon: '🚗',
-      jobCount: 1567,
-      growth: '+20%',
-      averageSalary: '₹12-25K',
-      description: 'Personal, commercial, and delivery driving jobs',
-      slug: 'drivers'
-    },
-    {
-      id: '9',
-      name: 'Construction Workers',
-      icon: '🏗️',
-      jobCount: 1098,
-      growth: '+30%',
-      averageSalary: '₹10-20K',
-      description: 'Construction, renovation, and building maintenance',
-      slug: 'construction-workers'
-    },
-    {
-      id: '10',
-      name: 'Retail Sales',
-      icon: '🛍️',
-      jobCount: 1876,
-      growth: '+16%',
-      averageSalary: '₹8-18K',
-      description: 'Shop assistants, cashiers, and sales representatives',
-      slug: 'retail-sales'
-    },
-    {
-      id: '11',
-      name: 'Beauty & Wellness',
-      icon: '💄',
-      jobCount: 634,
-      growth: '+32%',
-      averageSalary: '₹12-25K',
-      description: 'Salon, spa, and beauty service professionals',
-      slug: 'beauty-wellness'
-    },
-    {
-      id: '12',
-      name: 'Gardeners & Landscaping',
-      icon: '🌱',
-      jobCount: 445,
-      growth: '+14%',
-      averageSalary: '₹8-15K',
-      description: 'Garden maintenance and landscaping services',
-      slug: 'gardeners-landscaping'
-    }
-  ];
+  const allCategories = getAllCategories();
 
   const locations = [
     'All Locations',
@@ -180,7 +49,7 @@ const JobsPage: React.FC = () => {
     'Expert (5+ years)'
   ];
 
-  const handleCategoryClick = (category: JobCategory) => {
+  const handleCategoryClick = (category: JobCategoryData) => {
     // In a real app, this would navigate to /jobs/[category-slug]
     console.log('Navigating to category:', category.slug);
   };
@@ -195,9 +64,9 @@ const JobsPage: React.FC = () => {
     });
   };
 
-  const filteredCategories = jobCategories.filter(category =>
-    category.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCategories = searchQuery 
+    ? searchCategories(searchQuery)
+    : allCategories;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -367,19 +236,21 @@ const JobsPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">15,000+</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">
+                {allCategories.reduce((total, cat) => total + cat.jobCount, 0).toLocaleString()}+
+              </div>
               <div className="text-gray-600">Active Jobs</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-green-600 mb-2">50,000+</div>
-              <div className="text-gray-600">Job Seekers</div>
+              <div className="text-4xl font-bold text-green-600 mb-2">{allCategories.length}+</div>
+              <div className="text-gray-600">Job Categories</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-purple-600 mb-2">200+</div>
-              <div className="text-gray-600">Cities</div>
+              <div className="text-4xl font-bold text-purple-600 mb-2">500+</div>
+              <div className="text-gray-600">Cities Covered</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-orange-600 mb-2">12,000+</div>
+              <div className="text-4xl font-bold text-orange-600 mb-2">15,000+</div>
               <div className="text-gray-600">Employers</div>
             </div>
           </div>
