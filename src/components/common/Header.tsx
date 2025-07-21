@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCreditWallet } from '../../contexts/CreditWalletContext';
 import { Menu, X, User, LogOut, Briefcase, Search, Coins, Settings, HelpCircle } from 'lucide-react';
-import CoinPurchase from '../features/CoinPurchase';
+import BuyCreditsModal from '../modals/BuyCreditsModal';
 import { formatCurrency } from '../../lib/utils';
 
 interface HeaderProps {
@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const { getBalance } = useCreditWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showCoinPurchase, setShowCoinPurchase] = useState(false);
+  const [showBuyCredits, setShowBuyCredits] = useState(false);
   const location = useLocation();
 
   const handleLogout = () => {
@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                   
                   {/* Credit Balance */}
                   <button
-                    onClick={() => setShowCoinPurchase(true)}
+                    onClick={() => setShowBuyCredits(true)}
                     className="flex items-center bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105 shadow-md"
                   >
                     <Coins className="h-4 w-4 mr-2" />
@@ -259,7 +259,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                     </button>
                     <button
                       onClick={() => {
-                        setShowCoinPurchase(true);
+                        setShowBuyCredits(true);
                         setIsMenuOpen(false);
                       }}
                       className="text-left text-gray-700 hover:text-blue-600 transition-colors"
@@ -287,9 +287,9 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
         </div>
       </header>
 
-      <CoinPurchase
-        isOpen={showCoinPurchase}
-        onClose={() => setShowCoinPurchase(false)}
+      <BuyCreditsModal
+        isOpen={showBuyCredits}
+        onClose={() => setShowBuyCredits(false)}
       />
     </>
   );
