@@ -25,6 +25,7 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
   const dynamicCost = calculateContactCost(job);
   const userBalance = getBalance();
   const hasSufficientCoins = hasEnoughCoins(dynamicCost.finalCost);
+  const hasContactAccess = job.employer.phone; // Check if we have access to employer phone
 
   const handleWhatsAppApply = async () => {
     if (!user || user.role !== 'jobseeker') {
@@ -41,12 +42,17 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
 
     try {
       const candidate = user as JobSeeker;
-      const employerPhone = job.employer.phone; // This would be revealed after coin deduction
+      
+      // Check if we have access to employer phone (after coin purchase)
+      if (!job.employer.phone) {
+        onError?.('Please purchase contact information first to apply via WhatsApp');
+        return;
+      }
       
       const application = await whatsappIntegration.sendJobApplication(
         job, 
         candidate, 
-        employerPhone
+        job.employer.phone
       );
 
       setApplication(application);
@@ -94,6 +100,11 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
       return;
     }
 
+    if (!job.employer.phone) {
+      onError?.('Please purchase contact information first to chat directly');
+      return;
+    }
+
     const candidate = user as JobSeeker;
     const message = whatsappIntegration.generateJobApplicationMessage(job, candidate);
     const encodedMessage = encodeURIComponent(message);
@@ -108,7 +119,7 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={handleWhatsAppApply}
-          disabled={isApplying || !hasSufficientCoins}
+          disabled={isApplying || !hasSufficientCoins || !hasContactAccess}
           className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {isApplying ? (
@@ -116,10 +127,15 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
               Sending...
             </>
+          ) : !hasContactAccess ? (
+            <>
+              <MessageCircle className="h-5 w-5 mr-2" />
+              Buy Contact First ({dynamicCost.finalCost} coins)
+            </>
           ) : (
             <>
               <MessageCircle className="h-5 w-5 mr-2" />
-              Apply via WhatsApp ({dynamicCost.finalCost} coins)
+              Apply via WhatsApp
             </>
           )}
         </button>
@@ -134,10 +150,11 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
 
         <button
           onClick={openWhatsAppDirectly}
-          className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+          disabled={!hasContactAccess}
+          className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
           <Phone className="h-5 w-5 mr-2" />
-          Direct Chat
+          {hasContactAccess ? 'Direct Chat' : 'Buy Contact First'}
         </button>
       </div>
 
@@ -226,7 +243,7 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
         </div>
       )}
 
-      {/* Error Message */}
+      {/* Error Messages */}
       {!hasSufficientCoins && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-center">
@@ -238,6 +255,21 @@ const WhatsAppApplyButton: React.FC<WhatsAppApplyButtonProps> = ({
                 <button className="text-blue-600 hover:underline ml-1">
                   Buy coins now
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!hasContactAccess && hasSufficientCoins && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <AlertCircle className="h-5 w-5 text-yellow-600 mr-2" />
+            <div>
+              <div className="text-yellow-800 font-medium">Contact not purchased</div>
+              <div className="text-yellow-700 text-sm">
+                You need to purchase contact information first to apply via WhatsApp. 
+                Use the "Get Contact" button above to reveal the employer's phone number.
               </div>
             </div>
           </div>

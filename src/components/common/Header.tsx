@@ -60,6 +60,9 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
               <Link to="/workers" className={getLinkClassName('/workers')}>
                 Browse Workers
               </Link>
+              <Link to="/whatsapp-demo" className={getLinkClassName('/whatsapp-demo')}>
+                WhatsApp Demo
+              </Link>
               {isAuthenticated ? (
                 <>
                   <button 

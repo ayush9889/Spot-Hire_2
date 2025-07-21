@@ -22,6 +22,7 @@ export interface Employer extends User {
   logo?: string;
   hideContactInfo: boolean; // New field to hide direct contact info
   maskedBusinessName: string; // Masked version of business name
+  phone: string; // Phone number for WhatsApp integration
 }
 
 export interface JobSeeker extends User {
