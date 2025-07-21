@@ -3,7 +3,8 @@ import { Job } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { useJobs } from '../../contexts/JobContext';
 import { useCoinWallet } from '../../contexts/CoinWalletContext';
-import { MapPin, Clock, DollarSign, Building, Users, Coins, Phone, Eye, EyeOff } from 'lucide-react';
+import { MapPin, Clock, DollarSign, Building, Users, Coins, Phone, Eye, EyeOff, MessageCircle } from 'lucide-react';
+import WhatsAppApplyButton from '../features/WhatsAppApplyButton';
 
 interface JobCardProps {
   job: Job;
@@ -184,6 +185,21 @@ const JobCard: React.FC<JobCardProps> = ({
             <div className="mt-2 text-xs text-yellow-700">
               Dynamic pricing based on location, category, demand & recency
             </div>
+          </div>
+        )}
+
+        {/* WhatsApp Apply Button */}
+        {user?.role === 'jobseeker' && (
+          <div className="mb-4">
+            <WhatsAppApplyButton 
+              job={job}
+              onSuccess={(application) => {
+                console.log('WhatsApp application sent:', application);
+              }}
+              onError={(error) => {
+                console.error('WhatsApp application error:', error);
+              }}
+            />
           </div>
         )}
 
