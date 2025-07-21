@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Menu, X, User, LogOut, Briefcase, Search, Coins, Settings, HelpCircle } from 'lucide-react';
 import CoinPurchase from '../features/CoinPurchase';
@@ -12,6 +13,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCoinPurchase, setShowCoinPurchase] = useState(false);
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -24,27 +26,38 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
     }
     setIsMenuOpen(false);
   };
+
+  const getLinkClassName = (path: string) => {
+    const baseClasses = "transition-colors";
+    const activeClasses = "text-blue-600 font-semibold";
+    const inactiveClasses = "text-gray-700 hover:text-blue-600";
+    
+    return `${baseClasses} ${location.pathname === path ? activeClasses : inactiveClasses}`;
+  };
   return (
     <>
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex items-center">
+            <Link to="/" className="flex items-center">
               <Briefcase className="h-8 w-8 text-blue-600" />
               <span className="ml-2 text-xl font-bold text-gray-900">
                 ROJGAR
               </span>
-            </div>
+            </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Link to="/" className={getLinkClassName('/')}>
                 Home
-              </a>
-              <a href="#featured-workers" className="text-gray-700 hover:text-blue-600 transition-colors">
+              </Link>
+              <Link to="/jobs" className={getLinkClassName('/jobs')}>
+                Browse Jobs
+              </Link>
+              <Link to="/workers" className={getLinkClassName('/workers')}>
                 Browse Workers
-              </a>
+              </Link>
               {isAuthenticated ? (
                 <>
                   <button 
@@ -127,18 +140,18 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                 </>
               ) : (
                 <>
-                  <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  <button className="text-gray-700 hover:text-blue-600 transition-colors">
                     Post Job
-                  </a>
+                  </button>
                   <button
                     onClick={() => setShowCoinPurchase(true)}
                     className="text-gray-700 hover:text-blue-600 transition-colors"
                   >
                     Buy Credits
                   </button>
-                  <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  <Link to="/about" className={getLinkClassName('/about')}>
                     About
-                  </a>
+                  </Link>
                   <button
                     onClick={() => {/* Open auth modal */}}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -215,15 +228,33 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                   </>
                 ) : (
                   <>
-                    <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+                    <Link 
+                      to="/" 
+                      className={getLinkClassName('/')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       Home
-                    </a>
-                    <a href="#featured-workers" className="text-gray-700 hover:text-blue-600 transition-colors">
+                    </Link>
+                    <Link 
+                      to="/jobs" 
+                      className={getLinkClassName('/jobs')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Browse Jobs
+                    </Link>
+                    <Link 
+                      to="/workers" 
+                      className={getLinkClassName('/workers')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       Browse Workers
-                    </a>
-                    <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+                    </Link>
+                    <button 
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+                    >
                       Post Job
-                    </a>
+                    </button>
                     <button
                       onClick={() => {
                         setShowCoinPurchase(true);
@@ -233,9 +264,13 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                     >
                       Buy Credits
                     </button>
-                    <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+                    <Link 
+                      to="/about" 
+                      className={getLinkClassName('/about')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       About
-                    </a>
+                    </Link>
                     <button
                       onClick={() => {/* Open auth modal */ setIsMenuOpen(false);}}
                       className="text-left bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"

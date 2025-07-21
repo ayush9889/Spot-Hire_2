@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { JobProvider } from './contexts/JobContext';
 import { ToastProvider } from './components/ui/ToastContainer';
@@ -8,6 +9,8 @@ import AuthModal from './components/auth/AuthModal';
 import EmployerDashboard from './components/dashboard/EmployerDashboard';
 import JobSeekerDashboard from './components/dashboard/JobSeekerDashboard';
 import HomePage from './components/landing/HomePage';
+import JobsPage from './pages/JobsPage';
+import WorkersPage from './pages/WorkersPage';
 import OfflineIndicator from './components/features/OfflineIndicator';
 
 const AppContent: React.FC = () => {
@@ -36,10 +39,17 @@ const AppContent: React.FC = () => {
 
   return (
     <Layout>
-      <HomePage 
-        onOpenAuthModal={openAuthModal} 
-        onShowDashboard={() => setShowDashboard(true)}
-      />
+      <Routes>
+        <Route path="/" element={
+          <HomePage 
+            onOpenAuthModal={openAuthModal} 
+            onShowDashboard={() => setShowDashboard(true)}
+          />
+        } />
+        <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/workers" element={<WorkersPage />} />
+      </Routes>
+      
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
