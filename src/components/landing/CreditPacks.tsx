@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Star, Check, Zap, Crown, Users, Briefcase, Loader2, AlertCircle } from 'lucide-react';
-import { useCreditWallet } from '../../contexts/CreditWalletContext';
+import { useCoinWallet } from '../../contexts/CoinWalletContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { creditPacks } from '../../lib/creditPacks';
 import { CreditPack } from '../../types';
 
 const CreditPacks: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
-  const { purchaseCredits, loading, error } = useCreditWallet();
+  const { purchaseCoins, loading, error } = useCoinWallet();
   const [selectedPack, setSelectedPack] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>('upi');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -50,12 +50,12 @@ const CreditPacks: React.FC = () => {
 
     try {
       // Start payment process
-      const response = await purchaseCredits(pack, paymentMethod);
+      const success = await purchaseCoins(pack.credits, paymentMethod);
       
-      if (response.success) {
-        alert(`Successfully purchased ${pack.credits} credits! Your new balance: ${response.newBalance} credits`);
+      if (success) {
+        alert(`Successfully purchased ${pack.credits} coins!`);
       } else {
-        setPurchaseError(response.error || 'Payment failed');
+        setPurchaseError('Payment failed');
       }
     } catch (err) {
       setPurchaseError(err instanceof Error ? err.message : 'Payment failed');

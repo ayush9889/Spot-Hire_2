@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, Coins, Phone, MessageCircle, Shield, Star, MapPin, Clock, ExternalLink, CreditCard, AlertCircle } from 'lucide-react';
 import { Worker, ContactRevealLog } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCreditWallet } from '../../contexts/CreditWalletContext';
+import { useCoinWallet } from '../../contexts/CoinWalletContext';
 
 interface ContactRevealModalProps {
   isOpen: boolean;
@@ -14,11 +14,11 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
   const { user } = useAuth();
   const { 
     getBalance, 
-    hasEnoughCredits, 
-    revealContact, 
+    hasEnoughCoins, 
+    revealJobContact, 
     loading: walletLoading, 
     error: walletError 
-  } = useCreditWallet();
+  } = useCoinWallet();
   
   const [isRevealing, setIsRevealing] = useState(false);
   const [contactRevealed, setContactRevealed] = useState(false);
@@ -27,7 +27,7 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
 
   const creditCost = 1;
   const userCredits = getBalance();
-  const hasSufficientCredits = hasEnoughCredits(creditCost);
+  const hasSufficientCredits = hasEnoughCoins(creditCost);
 
   if (!isOpen) return null;
 
@@ -41,7 +41,7 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
     setError(null);
     
     try {
-      const result = await revealContact(worker);
+      const result = await revealJobContact(worker);
       if (result) {
         setRevealLog(result);
         setContactRevealed(true);

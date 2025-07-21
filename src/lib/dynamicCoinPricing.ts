@@ -176,7 +176,6 @@ export class DynamicCoinPricing {
       'delivery': 'Delivery',
       'security': 'Security',
       'cleaning-maintenance': 'Cleaning & Maintenance',
-      'beauty-wellness': 'Beauty & Wellness',
       'construction': 'Construction',
       'domestic': 'Domestic Help',
       'admin': 'Admin & Office',

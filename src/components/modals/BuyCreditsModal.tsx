@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, CreditCard, Smartphone, Building, Wallet, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCreditWallet } from '../../contexts/CreditWalletContext';
+import { useCoinWallet } from '../../contexts/CoinWalletContext';
 import { creditPacks } from '../../lib/creditPacks';
 import { CreditPack } from '../../types';
 
@@ -12,7 +12,7 @@ interface BuyCreditsModalProps {
 
 const BuyCreditsModal: React.FC<BuyCreditsModalProps> = ({ isOpen, onClose }) => {
   const { user, isAuthenticated } = useAuth();
-  const { purchaseCredits, getBalance, loading, error } = useCreditWallet();
+  const { purchaseCoins, getBalance, loading, error } = useCoinWallet();
   const [selectedPack, setSelectedPack] = useState<CreditPack | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>('upi');
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
@@ -41,9 +41,9 @@ const BuyCreditsModal: React.FC<BuyCreditsModalProps> = ({ isOpen, onClose }) =>
     setPurchaseError(null);
     
     try {
-      const response = await purchaseCredits(selectedPack, paymentMethod);
+      const success = await purchaseCoins(selectedPack.credits, paymentMethod);
       
-      if (response.success) {
+      if (success) {
         setPurchaseSuccess(true);
         setTimeout(() => {
           onClose();
@@ -51,7 +51,7 @@ const BuyCreditsModal: React.FC<BuyCreditsModalProps> = ({ isOpen, onClose }) =>
           setSelectedPack(null);
         }, 3000);
       } else {
-        setPurchaseError(response.error || 'Payment failed');
+        setPurchaseError('Payment failed');
       }
     } catch (err) {
       setPurchaseError(err instanceof Error ? err.message : 'Payment failed');
