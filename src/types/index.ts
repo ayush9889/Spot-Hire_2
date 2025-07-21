@@ -97,6 +97,71 @@ export interface CoinTransaction {
   relatedJobId?: string;
 }
 
+// Credit System Types
+export interface CreditPack {
+  id: string;
+  name: string;
+  credits: number;
+  price: number;
+  originalPrice?: number;
+  popular?: boolean;
+  features: string[];
+  savings?: string;
+}
+
+export interface CreditTransaction {
+  id: string;
+  employerId: string;
+  type: 'purchase' | 'deduct' | 'refund' | 'bonus' | 'signup_bonus';
+  amount: number;
+  description: string;
+  reference?: string; // Payment ID, Worker ID, etc.
+  timestamp: Date;
+  balanceAfter: number;
+}
+
+export interface ContactRevealLog {
+  id: string;
+  employerId: string;
+  workerId: string;
+  workerName: string;
+  workerSkill: string;
+  creditsUsed: number;
+  contactInfo: {
+    phone: string;
+    whatsapp: string;
+    alternatePhone?: string;
+  };
+  timestamp: Date;
+}
+
+export interface EmployerCreditWallet {
+  employerId: string;
+  balance: number;
+  totalPurchased: number;
+  totalSpent: number;
+  lastUpdated: Date;
+  transactions: CreditTransaction[];
+  revealHistory: ContactRevealLog[];
+}
+
+export interface PaymentRequest {
+  packId: string;
+  amount: number;
+  credits: number;
+  paymentMethod: 'upi' | 'card' | 'netbanking' | 'wallet';
+  employerId: string;
+}
+
+export interface PaymentResponse {
+  success: boolean;
+  transactionId: string;
+  paymentId?: string;
+  error?: string;
+  creditsAdded?: number;
+  newBalance?: number;
+}
+
 export type JobCategory = 
   | 'retail'
   | 'food-service'

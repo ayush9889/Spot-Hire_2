@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useCreditWallet } from '../../contexts/CreditWalletContext';
 import { Menu, X, User, LogOut, Briefcase, Search, Coins, Settings, HelpCircle } from 'lucide-react';
 import CoinPurchase from '../features/CoinPurchase';
 import { formatCurrency } from '../../lib/utils';
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { getBalance } = useCreditWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCoinPurchase, setShowCoinPurchase] = useState(false);
   const location = useLocation();
@@ -77,14 +79,14 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                     </a>
                   )}
                   
-                  {/* Coin Balance */}
+                  {/* Credit Balance */}
                   <button
                     onClick={() => setShowCoinPurchase(true)}
                     className="flex items-center bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full hover:from-yellow-500 hover:to-orange-600 transition-all transform hover:scale-105 shadow-md"
                   >
                     <Coins className="h-4 w-4 mr-2" />
-                    <span className="font-semibold">{user?.coins || 0}</span>
-                    <span className="ml-1 text-xs opacity-90">coins</span>
+                    <span className="font-semibold">{user?.role === 'employer' ? getBalance() : 0}</span>
+                    <span className="ml-1 text-xs opacity-90">credits</span>
                   </button>
 
                   <div className="relative">
@@ -115,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                           className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
                           <Coins className="h-4 w-4 mr-3" />
-                          Buy Coins ({formatCurrency(user?.coins || 0)})
+                          Buy Credits ({user?.role === 'employer' ? getBalance() : 0} credits)
                         </button>
                         <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                           <Settings className="h-4 w-4 mr-3" />
@@ -192,7 +194,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                         className="flex items-center bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-sm"
                       >
                         <Coins className="h-3 w-3 mr-1" />
-                        {user?.coins || 0}
+                        {user?.role === 'employer' ? getBalance() : 0}
                       </button>
                     </div>
                     <a href="#" className="text-gray-700 hover:text-blue-600 transition-colors">

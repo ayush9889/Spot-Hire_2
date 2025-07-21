@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Coins, Phone, MessageCircle, Shield, Star, MapPin, Clock, ExternalLink, CreditCard } from 'lucide-react';
-import { Worker } from '../../types';
+import { X, Coins, Phone, MessageCircle, Shield, Star, MapPin, Clock, ExternalLink, CreditCard, AlertCircle } from 'lucide-react';
+import { Worker, ContactRevealLog } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
+import { useCreditWallet } from '../../contexts/CreditWalletContext';
 
 interface ContactRevealModalProps {
   isOpen: boolean;
@@ -11,38 +12,45 @@ interface ContactRevealModalProps {
 
 const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose, worker }) => {
   const { user } = useAuth();
+  const { 
+    getBalance, 
+    hasEnoughCredits, 
+    revealContact, 
+    loading: walletLoading, 
+    error: walletError 
+  } = useCreditWallet();
+  
   const [isRevealing, setIsRevealing] = useState(false);
   const [contactRevealed, setContactRevealed] = useState(false);
-  const [revealedContactInfo, setRevealedContactInfo] = useState<{
-    phone: string;
-    whatsapp: string;
-    alternatePhone?: string;
-  } | null>(null);
+  const [revealLog, setRevealLog] = useState<ContactRevealLog | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const creditCost = 1;
-  const userCredits = user?.coins || 0;
-  const hasEnoughCredits = userCredits >= creditCost;
+  const userCredits = getBalance();
+  const hasSufficientCredits = hasEnoughCredits(creditCost);
 
   if (!isOpen) return null;
 
   const handleRevealContact = async () => {
-    if (!hasEnoughCredits) {
-      // Redirect to buy credits
+    if (!hasSufficientCredits) {
+      setError('Insufficient credits. Please purchase credits to continue.');
       return;
     }
 
     setIsRevealing(true);
+    setError(null);
     
-    // Simulate API call
-    setTimeout(() => {
-      setRevealedContactInfo({
-        phone: '+91 98765 43210',
-        whatsapp: '+91 98765 43210',
-        alternatePhone: '+91 87654 32109'
-      });
-      setContactRevealed(true);
+    try {
+      const result = await revealContact(worker);
+      if (result) {
+        setRevealLog(result);
+        setContactRevealed(true);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reveal contact');
+    } finally {
       setIsRevealing(false);
-    }, 1500);
+    }
   };
 
   const handleBuyCredits = () => {
@@ -52,16 +60,16 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
   };
 
   const handleWhatsAppContact = () => {
-    if (revealedContactInfo?.whatsapp) {
+    if (revealLog?.contactInfo.whatsapp) {
       const message = `Hi ${worker.name}, I found your profile on ROJGAR and I'm interested in hiring you for ${worker.skill} work. Please let me know your availability.`;
-      const whatsappUrl = `https://wa.me/${revealedContactInfo.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+      const whatsappUrl = `https://wa.me/${revealLog.contactInfo.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     }
   };
 
   const handlePhoneCall = () => {
-    if (revealedContactInfo?.phone) {
-      window.location.href = `tel:${revealedContactInfo.phone}`;
+    if (revealLog?.contactInfo.phone) {
+      window.location.href = `tel:${revealLog.contactInfo.phone}`;
     }
   };
 
@@ -142,16 +150,26 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
                 </div>
                 <div>
                   <div className="text-sm text-gray-600">Your balance</div>
-                  <div className={`text-lg font-bold ${hasEnoughCredits ? 'text-green-600' : 'text-red-600'}`}>
+                  <div className={`text-lg font-bold ${hasSufficientCredits ? 'text-green-600' : 'text-red-600'}`}>
                     {userCredits} Credits
                   </div>
                 </div>
               </div>
 
-              {hasEnoughCredits ? (
+              {/* Error Display */}
+              {(error || walletError) && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-center">
+                    <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+                    <span className="text-red-700 font-medium">{error || walletError}</span>
+                  </div>
+                </div>
+              )}
+
+              {hasSufficientCredits ? (
                 <button
                   onClick={handleRevealContact}
-                  disabled={isRevealing}
+                  disabled={isRevealing || walletLoading}
                   className="w-full bg-gradient-to-r from-blue-600 to-teal-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isRevealing ? (
@@ -202,13 +220,13 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
                 </p>
               </div>
 
-              {revealedContactInfo && (
+              {revealLog && (
                 <div className="space-y-3">
                   <div className="bg-white rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="text-sm text-gray-600">Primary Phone</div>
-                        <div className="text-lg font-bold text-gray-900">{revealedContactInfo.phone}</div>
+                        <div className="text-lg font-bold text-gray-900">{revealLog.contactInfo.phone}</div>
                       </div>
                       <button
                         onClick={handlePhoneCall}
@@ -223,7 +241,7 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="text-sm text-gray-600">WhatsApp</div>
-                        <div className="text-lg font-bold text-gray-900">{revealedContactInfo.whatsapp}</div>
+                        <div className="text-lg font-bold text-gray-900">{revealLog.contactInfo.whatsapp}</div>
                       </div>
                       <button
                         onClick={handleWhatsAppContact}
@@ -234,15 +252,15 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
                     </div>
                   </div>
 
-                  {revealedContactInfo.alternatePhone && (
+                  {revealLog.contactInfo.alternatePhone && (
                     <div className="bg-white rounded-lg p-4">
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="text-sm text-gray-600">Alternate Phone</div>
-                          <div className="text-lg font-bold text-gray-900">{revealedContactInfo.alternatePhone}</div>
+                          <div className="text-lg font-bold text-gray-900">{revealLog.contactInfo.alternatePhone}</div>
                         </div>
                         <button
-                          onClick={() => window.location.href = `tel:${revealedContactInfo.alternatePhone}`}
+                          onClick={() => window.location.href = `tel:${revealLog.contactInfo.alternatePhone}`}
                           className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
                         >
                           <Phone className="h-5 w-5" />
