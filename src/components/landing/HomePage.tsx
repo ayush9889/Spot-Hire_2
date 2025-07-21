@@ -176,9 +176,9 @@ const HomePage: React.FC<HomePageProps> = ({ onOpenAuthModal, onShowDashboard })
             </p>
           </div>
           
-          {/* Featured Categories Grid */}
+          {/* Featured Categories Grid - Show only 4 categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {getFeaturedCategories().slice(0, 16).map((category, index) => (
+            {getFeaturedCategories().slice(0, 4).map((category, index) => (
               <Link
                 key={category.id}
                 to={`/jobs`}
