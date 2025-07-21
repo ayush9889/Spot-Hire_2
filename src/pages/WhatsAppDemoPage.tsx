@@ -1,5 +1,6 @@
 import React from 'react';
 import JobCard from '../components/jobs/JobCard';
+import WhatsAppApplyButton from '../components/features/WhatsAppApplyButton';
 import { Job, JobSeeker } from '../types';
 
 const WhatsAppDemoPage: React.FC = () => {
@@ -104,12 +105,52 @@ const WhatsAppDemoPage: React.FC = () => {
           </ol>
         </div>
 
+        {/* Quick Test Button */}
+        <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+          <h2 className="text-lg font-semibold text-green-900 mb-3">Quick Test - WhatsApp Apply Button</h2>
+          <p className="text-green-800 mb-4">
+            Look for the green WhatsApp Apply Button below. It should show different states based on your login status:
+          </p>
+          <div className="bg-white rounded-lg p-4 border border-green-200">
+            <WhatsAppApplyButton 
+              job={mockJob}
+              onSuccess={(application) => {
+                console.log('WhatsApp application sent:', application);
+                alert('WhatsApp application sent successfully!');
+              }}
+              onError={(error) => {
+                console.error('WhatsApp application error:', error);
+                alert('Error: ' + error);
+              }}
+            />
+          </div>
+        </div>
+
         {/* Job Card with WhatsApp Apply Button */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Sample Job Posting</h2>
           <JobCard 
             job={mockJob}
             onViewDetails={(jobId) => console.log('View details for job:', jobId)}
+          />
+        </div>
+
+        {/* Standalone WhatsApp Apply Button Demo */}
+        <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">WhatsApp Apply Button (Standalone)</h2>
+          <p className="text-gray-600 mb-4">
+            This is the WhatsApp Apply Button component. It should be visible below:
+          </p>
+          <WhatsAppApplyButton 
+            job={mockJob}
+            onSuccess={(application) => {
+              console.log('WhatsApp application sent:', application);
+              alert('WhatsApp application sent successfully!');
+            }}
+            onError={(error) => {
+              console.error('WhatsApp application error:', error);
+              alert('Error: ' + error);
+            }}
           />
         </div>
 
