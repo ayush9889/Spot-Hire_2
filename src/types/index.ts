@@ -162,6 +162,90 @@ export interface PaymentResponse {
   newBalance?: number;
 }
 
+// Dynamic Coin System Types
+export interface DynamicCoinCost {
+  baseCost: number;
+  locationMultiplier: number;
+  categoryMultiplier: number;
+  demandMultiplier: number;
+  recencyMultiplier: number;
+  finalCost: number;
+  breakdown: {
+    location: string;
+    category: string;
+    demand: string;
+    recency: string;
+  };
+}
+
+export interface CoinWallet {
+  userId: string;
+  balance: number;
+  totalEarned: number;
+  totalSpent: number;
+  totalPurchased: number;
+  lastUpdated: Date;
+  transactions: CoinTransaction[];
+  contactReveals: ContactReveal[];
+}
+
+export interface ContactReveal {
+  id: string;
+  jobSeekerId: string;
+  jobId: string;
+  employerId: string;
+  coinsSpent: number;
+  dynamicCost: DynamicCoinCost;
+  contactInfo: {
+    phone: string;
+    email: string;
+    businessName: string;
+    address: string;
+  };
+  timestamp: Date;
+}
+
+export interface CoinEarning {
+  id: string;
+  userId: string;
+  type: 'referral' | 'daily_login' | 'profile_completion' | 'review' | 'admin_bonus';
+  amount: number;
+  description: string;
+  timestamp: Date;
+  status: 'pending' | 'credited' | 'expired';
+}
+
+export interface PaymentGateway {
+  id: 'razorpay' | 'stripe' | 'paytm';
+  name: string;
+  icon: string;
+  isActive: boolean;
+}
+
+export interface AdminCoinSettings {
+  baseContactCost: number;
+  locationMultipliers: Record<string, number>;
+  categoryMultipliers: Record<string, number>;
+  demandThresholds: {
+    low: number;
+    medium: number;
+    high: number;
+  };
+  recencyDecay: {
+    daily: number;
+    weekly: number;
+    monthly: number;
+  };
+  earningRates: {
+    referral: number;
+    dailyLogin: number;
+    profileCompletion: number;
+    review: number;
+  };
+  maxDailyEarnings: number;
+  coinExpiryDays: number;
+}
+
 export type JobCategory = 
   | 'retail'
   | 'food-service'

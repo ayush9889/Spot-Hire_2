@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Job } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { useJobs } from '../../contexts/JobContext';
+import { useCoinWallet } from '../../contexts/CoinWalletContext';
 import { MapPin, Clock, DollarSign, Building, Users, Coins, Phone, Eye, EyeOff } from 'lucide-react';
 
 interface JobCardProps {
@@ -17,14 +18,16 @@ const JobCard: React.FC<JobCardProps> = ({
   onViewDetails, 
   showEmployerInfo = true 
 }) => {
-  const { user, spendCoins } = useAuth();
+  const { user } = useAuth();
   const { purchaseContact, hasContactAccess } = useJobs();
+  const { calculateContactCost, hasEnoughCoins, getBalance } = useCoinWallet();
   const [showContactModal, setShowContactModal] = useState(false);
   const [contactInfo, setContactInfo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
   const hasAccess = user ? hasContactAccess(job.id, user.id) : false;
-  const canAffordContact = user ? user.coins >= job.contactCost : false;
+  const dynamicCost = calculateContactCost(job);
+  const canAffordContact = user ? hasEnoughCoins(dynamicCost.finalCost) : false;
 
   const formatSalary = (compensation: Job['compensation']) => {
     if (compensation.type === 'negotiable') return 'Negotiable';
@@ -168,7 +171,7 @@ const JobCard: React.FC<JobCardProps> = ({
               <div className="flex items-center">
                 <Coins className="h-4 w-4 text-yellow-600 mr-2" />
                 <span className="text-sm font-medium text-yellow-800">
-                  Contact info costs {job.contactCost} coins
+                  Contact info costs {dynamicCost.finalCost} coins
                 </span>
               </div>
               {hasAccess && (
@@ -177,6 +180,9 @@ const JobCard: React.FC<JobCardProps> = ({
                   <span className="text-xs">Purchased</span>
                 </div>
               )}
+            </div>
+            <div className="mt-2 text-xs text-yellow-700">
+              Dynamic pricing based on location, category, demand & recency
             </div>
           </div>
         )}
@@ -209,8 +215,8 @@ const JobCard: React.FC<JobCardProps> = ({
                     'Purchasing...'
                   ) : (
                     <>
-                      <Coins className="h-4 w-4 mr-1" />
-                      Get Contact ({job.contactCost})
+                                        <Coins className="h-4 w-4 mr-1" />
+                  Get Contact ({dynamicCost.finalCost})
                     </>
                   )}
                 </button>

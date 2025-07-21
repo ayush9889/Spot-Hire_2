@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { JobProvider } from './contexts/JobContext';
-import { CreditWalletProvider } from './contexts/CreditWalletContext';
+import { CoinWalletProvider } from './contexts/CoinWalletContext';
 import { ToastProvider } from './components/ui/ToastContainer';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 import Layout from './components/common/Layout';
@@ -67,12 +67,12 @@ function App() {
     <ErrorBoundary>
       <ToastProvider>
         <AuthProvider>
-          <CreditWalletProvider>
+          <CoinWalletProvider>
             <JobProvider>
               <OfflineIndicator />
               <AppContent />
             </JobProvider>
-          </CreditWalletProvider>
+          </CoinWalletProvider>
         </AuthProvider>
       </ToastProvider>
     </ErrorBoundary>

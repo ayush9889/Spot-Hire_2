@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCreditWallet } from '../../contexts/CreditWalletContext';
+import { useCoinWallet } from '../../contexts/CoinWalletContext';
 import { Menu, X, User, LogOut, Briefcase, Search, Coins, Settings, HelpCircle } from 'lucide-react';
 import BuyCreditsModal from '../modals/BuyCreditsModal';
 import { formatCurrency } from '../../lib/utils';
@@ -12,7 +12,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
   const { user, isAuthenticated, logout } = useAuth();
-  const { getBalance } = useCreditWallet();
+  const { getBalance } = useCoinWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showBuyCredits, setShowBuyCredits] = useState(false);
   const location = useLocation();
