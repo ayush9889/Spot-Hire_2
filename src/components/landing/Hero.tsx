@@ -299,58 +299,36 @@ const Hero: React.FC<HeroProps> = ({ onOpenAuthModal, onShowDashboard }) => {
       <NearbyJobs onViewJob={handleViewJob} />
 
       {/* Features Section */}
-      <div className="py-24 bg-gradient-to-br from-gray-50 via-white to-teal-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-teal-100 text-blue-800 mb-6 shadow-sm">
-              <Star className="h-4 w-4 mr-2" />
+      <div className="py-16 bg-gradient-to-br from-gray-50 via-white to-teal-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
               Why Choose Spot Hire
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Why Local Businesses & Workers Choose Spot Hire
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              We understand the unique needs of local businesses and service workers
+            <p className="text-lg text-gray-600">
+              Simple, fast, and reliable local hiring
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 icon: Clock,
                 title: 'Quick Hiring',
-                description: 'Post a job and start receiving applications within hours. Perfect for urgent staffing needs in restaurants, shops, and hotels.',
+                description: 'Post jobs and get responses within hours',
                 color: 'text-blue-600 bg-blue-100'
               },
               {
                 icon: MapPin,
                 title: 'Local Focus',
-                description: 'Find workers in your neighborhood. All jobs are location-based to connect nearby employers with local talent.',
+                description: 'Find workers in your neighborhood',
                 color: 'text-green-600 bg-green-100'
               },
               {
                 icon: Shield,
                 title: 'Verified Workers',
-                description: 'All job seekers are verified with phone numbers and basic background checks for your peace of mind.',
+                description: 'All workers are verified and trusted',
                 color: 'text-purple-600 bg-purple-100'
-              },
-              {
-                icon: Users,
-                title: 'No Experience Required',
-                description: 'Many jobs don\'t require prior experience. We help match attitude and willingness to learn with opportunity.',
-                color: 'text-orange-600 bg-orange-100'
-              },
-              {
-                icon: Briefcase,
-                title: 'Flexible Work Options',
-                description: 'Full-time, part-time, weekend shifts, or temporary work - find arrangements that work for everyone.',
-                color: 'text-teal-600 bg-teal-100'
-              },
-              {
-                icon: Star,
-                title: 'Fair Wages',
-                description: 'Transparent salary information and fair wage practices. Know what you\'ll earn before you apply.',
-                color: 'text-pink-600 bg-pink-100'
               }
             ].map((feature, index) => (
               <motion.div 
@@ -360,13 +338,12 @@ const Hero: React.FC<HeroProps> = ({ onOpenAuthModal, onShowDashboard }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <div className="bg-white rounded-2xl p-10 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-teal-50 rounded-bl-full opacity-30"></div>
-                  <div className={`w-16 h-16 rounded-xl ${feature.color} flex items-center justify-center mb-8 group-hover:scale-125 transition-transform duration-500 shadow-lg relative z-10`}>
-                    <feature.icon className="h-8 w-8" />
+                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                  <div className={`w-12 h-12 rounded-lg ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md relative z-10`}>
+                    <feature.icon className="h-6 w-6" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">{feature.title}</h3>
-                  <p className="text-gray-600 leading-relaxed text-lg">{feature.description}</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">{feature.title}</h3>
+                  <p className="text-gray-600 text-sm">{feature.description}</p>
                 </div>
               </motion.div>
             ))}
