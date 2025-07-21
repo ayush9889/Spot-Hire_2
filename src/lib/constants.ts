@@ -1,8 +1,8 @@
 export const APP_CONFIG = {
-  name: 'ROJGAR',
+  name: 'Spot Hire',
   description: 'Find Local Jobs & Hire Staff',
   version: '1.0.0',
-  supportEmail: 'support@rojgar.com',
+  supportEmail: 'support@spothire.com',
   supportPhone: '+91 9876543210',
 } as const;
 

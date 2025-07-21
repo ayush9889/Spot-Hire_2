@@ -276,7 +276,7 @@ const JobCard: React.FC<JobCardProps> = ({
               <div className="bg-blue-50 p-3 rounded-lg">
                 <p className="text-sm text-blue-800">
                   💡 <strong>Tip:</strong> Call during business hours for better response. 
-                  Mention you found this job on ROJGAR.
+                  Mention you found this job on Spot Hire.
                 </p>
               </div>
             </div>

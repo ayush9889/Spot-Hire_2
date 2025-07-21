@@ -1,4 +1,4 @@
-# ROJGAR - Find Local Jobs & Hire Staff
+# Spot Hire - Find Local Jobs & Hire Staff
 
 A comprehensive job marketplace platform focused on blue-collar jobs, connecting local businesses with job seekers across India.
 
@@ -38,8 +38,8 @@ A comprehensive job marketplace platform focused on blue-collar jobs, connecting
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/rojgar.git
-   cd rojgar
+   git clone https://github.com/your-username/spothire.git
+cd spothire
    ```
 
 2. **Install dependencies**
@@ -178,9 +178,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Email**: support@rojgar.com
+- **Email**: support@spothire.com
 - **Phone**: +91-9876543210
-- **Documentation**: [docs.rojgar.com](https://docs.rojgar.com)
+- **Documentation**: [docs.spothire.com](https://docs.spothire.com)
 
 ## 🗺 Roadmap
 

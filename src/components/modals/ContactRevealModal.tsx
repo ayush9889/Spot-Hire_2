@@ -61,7 +61,7 @@ const ContactRevealModal: React.FC<ContactRevealModalProps> = ({ isOpen, onClose
 
   const handleWhatsAppContact = () => {
     if (revealLog?.contactInfo.whatsapp) {
-      const message = `Hi ${worker.name}, I found your profile on ROJGAR and I'm interested in hiring you for ${worker.skill} work. Please let me know your availability.`;
+      const message = `Hi ${worker.name}, I found your profile on Spot Hire and I'm interested in hiring you for ${worker.skill} work. Please let me know your availability.`;
       const whatsappUrl = `https://wa.me/${revealLog.contactInfo.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     }

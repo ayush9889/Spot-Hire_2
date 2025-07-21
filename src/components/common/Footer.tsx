@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
               <Briefcase className="h-8 w-8 text-blue-400" />
-              <span className="ml-2 text-xl font-bold">ROJGAR</span>
+                              <span className="ml-2 text-xl font-bold">Spot Hire</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md">
               India's leading platform for local jobs and blue-collar employment. 
@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 ROJGAR. All rights reserved.
+            © 2024 Spot Hire. All rights reserved.
           </p>
           <p className="text-gray-400 text-sm mt-2 sm:mt-0">
             Made with ❤️ for India's workforce

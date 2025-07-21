@@ -112,7 +112,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenAuthModal, onShowDashboard }) => {
               
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600">
-                  ROJGAR
+                  Spot Hire
                 </span>
                 <br />
                 Find work in shops, restaurants & local businesses
@@ -304,10 +304,10 @@ const Hero: React.FC<HeroProps> = ({ onOpenAuthModal, onShowDashboard }) => {
           <div className="text-center mb-16">
             <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-teal-100 text-blue-800 mb-6 shadow-sm">
               <Star className="h-4 w-4 mr-2" />
-              Why Choose ROJGAR
+              Why Choose Spot Hire
             </div>
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Why Local Businesses & Workers Choose ROJGAR
+              Why Local Businesses & Workers Choose Spot Hire
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               We understand the unique needs of local businesses and service workers
@@ -384,7 +384,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenAuthModal, onShowDashboard }) => {
         </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-8 relative z-10">
-            Start Your Journey with ROJGAR Today
+            Start Your Journey with Spot Hire Today
           </h2>
           <p className="text-2xl text-blue-100 mb-12 leading-relaxed relative z-10">
             Whether you're looking for your first job or need to hire reliable staff, we're here to help
