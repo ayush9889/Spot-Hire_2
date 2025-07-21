@@ -196,12 +196,12 @@ const HomePage: React.FC<HomePageProps> = ({ onOpenAuthModal, onShowDashboard })
           
           {/* Featured Categories Grid - Show only 4 categories */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {getFeaturedCategories().slice(0, 4).map((category, index) => (
-              <Link
-                key={category.id}
-                to={`/jobs`}
-                className="group cursor-pointer"
-              >
+                                  {getFeaturedCategories().slice(0, 4).map((category, index) => (
+                        <Link
+                          key={category.id}
+                          to={`/jobs/${category.slug}`}
+                          className="group cursor-pointer"
+                        >
                 <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:border-blue-200 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-50 to-teal-50 rounded-bl-full opacity-50"></div>
                   

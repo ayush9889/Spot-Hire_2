@@ -11,6 +11,7 @@ import EmployerDashboard from './components/dashboard/EmployerDashboard';
 import JobSeekerDashboard from './components/dashboard/JobSeekerDashboard';
 import HomePage from './components/landing/HomePage';
 import JobsPage from './pages/JobsPage';
+import JobListingsPage from './pages/JobListingsPage';
 import WorkersPage from './pages/WorkersPage';
 import OfflineIndicator from './components/features/OfflineIndicator';
 
@@ -48,6 +49,7 @@ const AppContent: React.FC = () => {
           />
         } />
         <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/jobs/:categorySlug" element={<JobListingsPage />} />
         <Route path="/workers" element={<WorkersPage />} />
       </Routes>
       

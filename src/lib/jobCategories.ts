@@ -1232,4 +1232,8 @@ export const searchCategories = (query: string): JobCategoryData[] => {
     category.name.toLowerCase().includes(lowercaseQuery) ||
     category.description.toLowerCase().includes(lowercaseQuery)
   );
+};
+
+export const getCategoryById = (slug: string): JobCategoryData | null => {
+  return jobCategories.find(category => category.slug === slug) || null;
 }; 

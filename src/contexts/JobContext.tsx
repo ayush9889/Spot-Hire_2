@@ -37,14 +37,15 @@ interface JobProviderProps {
 
 // Mock data focused on blue-collar jobs with masked contact info
 const mockJobs: Job[] = [
+  // Electricians
   {
-    id: '1',
-    title: 'Shop Assistant - Fashion Store',
-    description: 'Looking for a friendly shop assistant to help customers, manage inventory, and handle billing. No prior experience required - we will train you. Must be comfortable standing for long hours and have basic English communication skills.',
-    category: 'retail',
+    id: 'elec-1',
+    title: 'Electrician - Residential & Commercial',
+    description: 'Experienced electrician needed for residential and commercial electrical work. Must have 2+ years experience in wiring, installation, and maintenance. Own tools required.',
+    category: 'electricians',
     type: 'full-time',
     location: {
-      address: 'Main Market Area, Andheri West',
+      address: 'Andheri West, Mumbai',
       city: 'Mumbai',
       state: 'Maharashtra',
       pincode: '400058',
@@ -52,40 +53,82 @@ const mockJobs: Job[] = [
     },
     compensation: {
       type: 'monthly',
-      min: 15000,
-      max: 20000
+      min: 18000,
+      max: 25000
     },
-    requirements: ['Basic English', 'Customer Service', 'Willing to Learn'],
-    employerId: '1',
+    requirements: ['Electrical Certification', '2+ Years Experience', 'Own Tools', 'Hindi/English'],
+    employerId: 'emp-1',
     employer: {
-      id: '1',
-      email: 'owner@fashionhub.com',
-      name: 'Ramesh Gupta',
+      id: 'emp-1',
+      email: 'contact@electricalworks.com',
+      name: 'Rajesh Kumar',
       role: 'employer',
       phone: '+91 9876543210',
       location: { city: 'Mumbai', state: 'Maharashtra', pincode: '400058' },
       createdAt: new Date(),
       isVerified: true,
       coins: 50,
-      businessName: 'Fashion Hub Store',
-      businessType: 'Retail Clothing',
+      businessName: 'Electrical Works & Services',
+      businessType: 'Electrical Services',
       hideContactInfo: true,
-      maskedBusinessName: 'Fashion H*** Store'
+      maskedBusinessName: 'Electrical W*** & Services'
     },
     status: 'active',
-    postedAt: new Date('2024-01-15'),
-    expiresAt: new Date('2024-02-15'),
-    applicationsCount: 12,
+    postedAt: new Date('2024-01-20'),
+    expiresAt: new Date('2024-02-20'),
+    applicationsCount: 15,
     contactCost: 3
   },
   {
-    id: '2',
-    title: 'Waiter/Waitress - Family Restaurant',
-    description: 'Join our busy family restaurant as a waiter/waitress. Responsibilities include taking orders, serving food, and ensuring customer satisfaction. Previous restaurant experience preferred but not mandatory.',
-    category: 'food-service',
+    id: 'elec-2',
+    title: 'Junior Electrician - Training Provided',
+    description: 'Looking for a junior electrician with basic knowledge. We will provide training and certification. Must be willing to learn and work hard.',
+    category: 'electricians',
     type: 'full-time',
     location: {
-      address: 'Near Metro Station, Sector 18',
+      address: 'Thane West, Mumbai',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pincode: '400601',
+      isRemote: false
+    },
+    compensation: {
+      type: 'monthly',
+      min: 12000,
+      max: 16000
+    },
+    requirements: ['Basic Electrical Knowledge', 'Willing to Learn', '10th Pass', 'Hindi/English'],
+    employerId: 'emp-2',
+    employer: {
+      id: 'emp-2',
+      email: 'info@thaneelectrical.com',
+      name: 'Amit Patel',
+      role: 'employer',
+      phone: '+91 9876543211',
+      location: { city: 'Mumbai', state: 'Maharashtra', pincode: '400601' },
+      createdAt: new Date(),
+      isVerified: true,
+      coins: 30,
+      businessName: 'Thane Electrical Services',
+      businessType: 'Electrical Services',
+      hideContactInfo: true,
+      maskedBusinessName: 'Thane E*** Services'
+    },
+    status: 'active',
+    postedAt: new Date('2024-01-18'),
+    expiresAt: new Date('2024-02-18'),
+    applicationsCount: 8,
+    contactCost: 2
+  },
+  // Plumbers
+  {
+    id: 'plumb-1',
+    title: 'Experienced Plumber - Construction Site',
+    description: 'Experienced plumber needed for large construction project. Must have 3+ years experience in residential plumbing. Good salary and benefits.',
+    category: 'plumbers',
+    type: 'full-time',
+    location: {
+      address: 'Noida Sector 62, UP',
       city: 'Noida',
       state: 'Uttar Pradesh',
       pincode: '201301',
@@ -93,37 +136,38 @@ const mockJobs: Job[] = [
     },
     compensation: {
       type: 'monthly',
-      min: 12000,
-      max: 18000
+      min: 20000,
+      max: 28000
     },
-    requirements: ['Customer Service', 'Basic Hindi/English', 'Evening Availability'],
-    employerId: '2',
+    requirements: ['3+ Years Experience', 'Construction Knowledge', 'Own Tools', 'Hindi/English'],
+    employerId: 'emp-3',
     employer: {
-      id: '2',
-      email: 'contact@sharmarestaurant.com',
-      name: 'Suresh Sharma',
+      id: 'emp-3',
+      email: 'hr@constructionco.com',
+      name: 'Suresh Verma',
       role: 'employer',
-      phone: '+91 9876543211',
+      phone: '+91 9876543212',
       location: { city: 'Noida', state: 'Uttar Pradesh', pincode: '201301' },
       createdAt: new Date(),
       isVerified: true,
-      coins: 30,
-      businessName: 'Sharma Family Restaurant',
-      businessType: 'Restaurant',
+      coins: 40,
+      businessName: 'ABC Construction Company',
+      businessType: 'Construction',
       hideContactInfo: true,
-      maskedBusinessName: 'Sharma F*** Restaurant'
+      maskedBusinessName: 'ABC C*** Company'
     },
     status: 'active',
-    postedAt: new Date('2024-01-12'),
-    expiresAt: new Date('2024-02-12'),
-    applicationsCount: 8,
-    contactCost: 2
+    postedAt: new Date('2024-01-19'),
+    expiresAt: new Date('2024-02-19'),
+    applicationsCount: 12,
+    contactCost: 3
   },
+  // Delivery & Logistics
   {
-    id: '3',
+    id: 'delivery-1',
     title: 'Delivery Partner - Food Delivery',
     description: 'Flexible delivery job with good earnings. Deliver food orders to customers using your own vehicle (bike/scooter). Flexible timing - work when you want.',
-    category: 'delivery',
+    category: 'delivery-logistics',
     type: 'gig',
     location: {
       address: 'Multiple locations across Delhi',
@@ -137,28 +181,196 @@ const mockJobs: Job[] = [
       min: 80,
       max: 120
     },
-    requirements: ['Driving License', 'Own Vehicle', 'Local Area Knowledge'],
-    employerId: '3',
+    requirements: ['Own Vehicle', 'Valid License', 'Smartphone', 'Hindi/English'],
+    employerId: 'emp-4',
     employer: {
-      id: '3',
-      email: 'hr@quickfood.com',
-      name: 'Quick Food Delivery',
+      id: 'emp-4',
+      email: 'partners@fooddelivery.com',
+      name: 'Food Delivery Co',
       role: 'employer',
-      phone: '+91 9876543212',
+      phone: '+91 9876543213',
       location: { city: 'Delhi', state: 'Delhi', pincode: '110001' },
       createdAt: new Date(),
       isVerified: true,
-      coins: 100,
+      coins: 25,
       businessName: 'Quick Food Delivery',
-      businessType: 'Food Delivery Service',
+      businessType: 'Food Delivery',
       hideContactInfo: true,
       maskedBusinessName: 'Quick F*** Delivery'
     },
     status: 'active',
-    postedAt: new Date('2024-01-10'),
-    expiresAt: new Date('2024-02-10'),
+    postedAt: new Date('2024-01-17'),
+    expiresAt: new Date('2024-02-17'),
     applicationsCount: 25,
-    contactCost: 4
+    contactCost: 2
+  },
+  // Housekeeping & Cleaning
+  {
+    id: 'clean-1',
+    title: 'Housekeeper - Residential Complex',
+    description: 'Looking for reliable housekeeper for residential complex. Duties include cleaning common areas, garbage collection, and basic maintenance.',
+    category: 'housekeeping-cleaning',
+    type: 'full-time',
+    location: {
+      address: 'Whitefield, Bangalore',
+      city: 'Bangalore',
+      state: 'Karnataka',
+      pincode: '560066',
+      isRemote: false
+    },
+    compensation: {
+      type: 'monthly',
+      min: 10000,
+      max: 14000
+    },
+    requirements: ['Reliable', 'Basic Cleaning Skills', 'Hindi/Kannada', 'Morning Shift'],
+    employerId: 'emp-5',
+    employer: {
+      id: 'emp-5',
+      email: 'admin@residentialcomplex.com',
+      name: 'Residential Complex',
+      role: 'employer',
+      phone: '+91 9876543214',
+      location: { city: 'Bangalore', state: 'Karnataka', pincode: '560066' },
+      createdAt: new Date(),
+      isVerified: true,
+      coins: 20,
+      businessName: 'Green Valley Residential Complex',
+      businessType: 'Real Estate',
+      hideContactInfo: true,
+      maskedBusinessName: 'Green V*** Residential Complex'
+    },
+    status: 'active',
+    postedAt: new Date('2024-01-16'),
+    expiresAt: new Date('2024-02-16'),
+    applicationsCount: 18,
+    contactCost: 2
+  },
+  // Security Guards
+  {
+    id: 'security-1',
+    title: 'Security Guard - Commercial Building',
+    description: 'Experienced security guard needed for commercial building. 12-hour shifts, good salary. Must have security guard license.',
+    category: 'security-guards',
+    type: 'full-time',
+    location: {
+      address: 'Bandra Kurla Complex, Mumbai',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pincode: '400051',
+      isRemote: false
+    },
+    compensation: {
+      type: 'monthly',
+      min: 15000,
+      max: 20000
+    },
+    requirements: ['Security License', '2+ Years Experience', '12-Hour Shifts', 'Hindi/English'],
+    employerId: 'emp-6',
+    employer: {
+      id: 'emp-6',
+      email: 'security@commercialbuilding.com',
+      name: 'Commercial Building',
+      role: 'employer',
+      phone: '+91 9876543215',
+      location: { city: 'Mumbai', state: 'Maharashtra', pincode: '400051' },
+      createdAt: new Date(),
+      isVerified: true,
+      coins: 35,
+      businessName: 'BKC Commercial Tower',
+      businessType: 'Commercial Real Estate',
+      hideContactInfo: true,
+      maskedBusinessName: 'BKC C*** Tower'
+    },
+    status: 'active',
+    postedAt: new Date('2024-01-15'),
+    expiresAt: new Date('2024-02-15'),
+    applicationsCount: 22,
+    contactCost: 3
+  },
+  // Cooks & Chefs
+  {
+    id: 'cook-1',
+    title: 'Cook - North Indian Restaurant',
+    description: 'Experienced cook needed for North Indian restaurant. Must know Punjabi, Mughlai, and basic Indian cooking. Good salary and tips.',
+    category: 'cooks-chefs',
+    type: 'full-time',
+    location: {
+      address: 'Koramangala, Bangalore',
+      city: 'Bangalore',
+      state: 'Karnataka',
+      pincode: '560034',
+      isRemote: false
+    },
+    compensation: {
+      type: 'monthly',
+      min: 18000,
+      max: 25000
+    },
+    requirements: ['North Indian Cooking', '3+ Years Experience', 'Evening Shift', 'Hindi/English'],
+    employerId: 'emp-7',
+    employer: {
+      id: 'emp-7',
+      email: 'chef@northindianrestaurant.com',
+      name: 'North Indian Restaurant',
+      role: 'employer',
+      phone: '+91 9876543216',
+      location: { city: 'Bangalore', state: 'Karnataka', pincode: '560034' },
+      createdAt: new Date(),
+      isVerified: true,
+      coins: 30,
+      businessName: 'Punjabi Dhaba Restaurant',
+      businessType: 'Restaurant',
+      hideContactInfo: true,
+      maskedBusinessName: 'Punjabi D*** Restaurant'
+    },
+    status: 'active',
+    postedAt: new Date('2024-01-14'),
+    expiresAt: new Date('2024-02-14'),
+    applicationsCount: 16,
+    contactCost: 3
+  },
+  // Office Assistants
+  {
+    id: 'office-1',
+    title: 'Office Assistant - Small Business',
+    description: 'Office assistant needed for small business. Duties include answering calls, data entry, filing, and basic admin work. No experience required.',
+    category: 'office-assistants',
+    type: 'full-time',
+    location: {
+      address: 'HSR Layout, Bangalore',
+      city: 'Bangalore',
+      state: 'Karnataka',
+      pincode: '560102',
+      isRemote: false
+    },
+    compensation: {
+      type: 'monthly',
+      min: 12000,
+      max: 16000
+    },
+    requirements: ['Basic Computer Skills', 'Good Communication', '10th Pass', 'English'],
+    employerId: 'emp-8',
+    employer: {
+      id: 'emp-8',
+      email: 'admin@smallbusiness.com',
+      name: 'Small Business',
+      role: 'employer',
+      phone: '+91 9876543217',
+      location: { city: 'Bangalore', state: 'Karnataka', pincode: '560102' },
+      createdAt: new Date(),
+      isVerified: true,
+      coins: 25,
+      businessName: 'Tech Solutions Pvt Ltd',
+      businessType: 'Technology',
+      hideContactInfo: true,
+      maskedBusinessName: 'Tech S*** Pvt Ltd'
+    },
+    status: 'active',
+    postedAt: new Date('2024-01-13'),
+    expiresAt: new Date('2024-02-13'),
+    applicationsCount: 14,
+    contactCost: 2
   }
 ];
 

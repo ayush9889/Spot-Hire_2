@@ -50,8 +50,8 @@ const JobsPage: React.FC = () => {
   ];
 
   const handleCategoryClick = (category: JobCategoryData) => {
-    // In a real app, this would navigate to /jobs/[category-slug]
-    console.log('Navigating to category:', category.slug);
+    // Navigate to the job listings page for this category
+    window.location.href = `/jobs/${category.slug}`;
   };
 
   const handleSearch = () => {
