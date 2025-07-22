@@ -8,6 +8,10 @@ interface AuthContextType extends AuthState {
   updateProfile: (data: Partial<User>) => Promise<void>;
   addCoins: (amount: number) => Promise<void>;
   spendCoins: (amount: number) => Promise<void>;
+  sendVerificationEmail: (email: string) => Promise<void>;
+  verifyEmail: (token: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,7 +28,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Mock data for demonstration
+// Enhanced mock data with more realistic user profiles
 const mockUsers: (Employer | JobSeeker)[] = [
   {
     id: '1',
@@ -33,7 +37,7 @@ const mockUsers: (Employer | JobSeeker)[] = [
     role: 'employer',
     phone: '+91 9876543210',
     location: { city: 'Mumbai', state: 'Maharashtra', pincode: '400001' },
-    createdAt: new Date(),
+    createdAt: new Date('2024-01-15'),
     isVerified: true,
     coins: 50,
     businessName: 'Fashion Hub Store',
@@ -50,15 +54,34 @@ const mockUsers: (Employer | JobSeeker)[] = [
     role: 'jobseeker',
     phone: '+91 9876543211',
     location: { city: 'Mumbai', state: 'Maharashtra', pincode: '400058' },
-    createdAt: new Date(),
+    createdAt: new Date('2024-02-01'),
     isVerified: true,
-    coins: 10,
-    skills: ['Customer Service', 'Basic English', 'Retail Experience'],
-    experience: '1 year in local shop',
+    coins: 25,
+    skills: ['Customer Service', 'Basic English', 'Retail Experience', 'Cash Handling'],
+    experience: '2 years in retail',
     preferredJobTypes: ['full-time', 'part-time'],
     availability: 'Weekdays and Weekends',
     preferredCategories: ['retail', 'food-service'],
-    aboutMe: 'Hardworking individual looking for stable employment in retail sector'
+    aboutMe: 'Hardworking individual with 2 years of retail experience. Looking for stable employment in customer service roles.',
+    profilePhoto: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
+  },
+  {
+    id: '3',
+    email: 'driver@example.com',
+    name: 'Rajesh Kumar',
+    role: 'jobseeker',
+    phone: '+91 9876543212',
+    location: { city: 'Delhi', state: 'Delhi', pincode: '110001' },
+    createdAt: new Date('2024-01-20'),
+    isVerified: true,
+    coins: 15,
+    skills: ['Driving', 'Navigation', 'Customer Service', 'Vehicle Maintenance'],
+    experience: '3 years as delivery driver',
+    preferredJobTypes: ['full-time', 'gig'],
+    availability: 'Flexible hours',
+    preferredCategories: ['delivery', 'driving'],
+    aboutMe: 'Experienced driver with clean record. Own vehicle available for delivery work.',
+    profilePhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
   }
 ];
 
@@ -70,19 +93,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    // Check for stored user session with no expiration
+    // Check for stored user session
     const storedUser = localStorage.getItem('user');
     const sessionTimestamp = localStorage.getItem('userSessionTimestamp');
     
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        // Session never expires - keep user logged in permanently
-        setAuthState({
-          user,
-          isAuthenticated: true,
-          loading: false
-        });
+        // Check if session is still valid (7 days)
+        const sessionAge = Date.now() - parseInt(sessionTimestamp || '0');
+        const sessionValid = sessionAge < 7 * 24 * 60 * 60 * 1000; // 7 days
+        
+        if (sessionValid) {
+          setAuthState({
+            user,
+            isAuthenticated: true,
+            loading: false
+          });
+        } else {
+          // Session expired, clear storage
+          localStorage.removeItem('user');
+          localStorage.removeItem('userSessionTimestamp');
+          setAuthState(prev => ({ ...prev, loading: false }));
+        }
       } catch (error) {
         // Clear corrupted session
         localStorage.removeItem('user');
@@ -95,44 +128,96 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Mock login logic
-    const user = mockUsers.find(u => u.email === email);
-    if (user && password === 'password') {
-      // Store user with permanent session
+    setAuthState(prev => ({ ...prev, loading: true }));
+    
+    try {
+      // Mock login logic with email validation
+      const user = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      
+      if (!user) {
+        throw new Error('No account found with this email address');
+      }
+      
+      if (password !== 'password') {
+        throw new Error('Incorrect password');
+      }
+
+      // Store user session
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('userSessionTimestamp', Date.now().toString());
+      
       setAuthState({
         user,
         isAuthenticated: true,
         loading: false
       });
-    } else {
-      throw new Error('Invalid credentials');
+    } catch (error) {
+      setAuthState(prev => ({ ...prev, loading: false }));
+      throw error;
     }
   };
 
   const register = async (userData: Partial<User>) => {
-    // Mock registration logic
-    const newUser: User = {
-      id: Math.random().toString(36).substr(2, 9),
-      email: userData.email || '',
-      name: userData.name || '',
-      role: userData.role || 'jobseeker',
-      phone: userData.phone || '',
-      location: userData.location || { city: '', state: '', pincode: '' },
-      createdAt: new Date(),
-      isVerified: false,
-      coins: userData.role === 'jobseeker' ? 5 : 20 // Welcome bonus
-    };
+    setAuthState(prev => ({ ...prev, loading: true }));
+    
+    try {
+      // Check if email already exists
+      const existingUser = mockUsers.find(u => u.email.toLowerCase() === userData.email?.toLowerCase());
+      if (existingUser) {
+        throw new Error('An account with this email already exists');
+      }
 
-    // Store user with permanent session
-    localStorage.setItem('user', JSON.stringify(newUser));
-    localStorage.setItem('userSessionTimestamp', Date.now().toString());
-    setAuthState({
-      user: newUser,
-      isAuthenticated: true,
-      loading: false
-    });
+      // Create new user based on role
+      let newUser: User;
+      
+      if (userData.role === 'employer') {
+        newUser = {
+          id: Math.random().toString(36).substr(2, 9),
+          email: userData.email || '',
+          name: userData.name || '',
+          role: 'employer',
+          phone: userData.phone || '',
+          location: userData.location || { city: '', state: '', pincode: '' },
+          createdAt: new Date(),
+          isVerified: false,
+          coins: 20, // Welcome bonus for employers
+          businessName: '',
+          businessType: '',
+          hideContactInfo: true,
+          maskedBusinessName: ''
+        } as Employer;
+      } else {
+        newUser = {
+          id: Math.random().toString(36).substr(2, 9),
+          email: userData.email || '',
+          name: userData.name || '',
+          role: 'jobseeker',
+          phone: userData.phone || '',
+          location: userData.location || { city: '', state: '', pincode: '' },
+          createdAt: new Date(),
+          isVerified: false,
+          coins: 10, // Welcome bonus for job seekers
+          skills: [],
+          experience: '',
+          preferredJobTypes: ['full-time'],
+          availability: 'Immediate',
+          preferredCategories: ['retail']
+        } as JobSeeker;
+      }
+
+      // Store user session
+      localStorage.setItem('user', JSON.stringify(newUser));
+      localStorage.setItem('userSessionTimestamp', Date.now().toString());
+      
+      setAuthState({
+        user: newUser,
+        isAuthenticated: true,
+        loading: false
+      });
+    } catch (error) {
+      setAuthState(prev => ({ ...prev, loading: false }));
+      throw error;
+    }
   };
 
   const logout = () => {
@@ -177,6 +262,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const sendVerificationEmail = async (email: string) => {
+    // Mock email verification
+    console.log(`Verification email sent to ${email}`);
+    return Promise.resolve();
+  };
+
+  const verifyEmail = async (token: string) => {
+    if (authState.user) {
+      const updatedUser = { ...authState.user, isVerified: true };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setAuthState(prev => ({ ...prev, user: updatedUser }));
+    }
+    return Promise.resolve();
+  };
+
+  const resetPassword = async (email: string) => {
+    // Mock password reset
+    console.log(`Password reset email sent to ${email}`);
+    return Promise.resolve();
+  };
+
+  const changePassword = async (oldPassword: string, newPassword: string) => {
+    // Mock password change
+    if (oldPassword !== 'password') {
+      throw new Error('Current password is incorrect');
+    }
+    console.log('Password changed successfully');
+    return Promise.resolve();
+  };
+
   const value: AuthContextType = {
     ...authState,
     login,
@@ -184,7 +299,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateProfile,
     addCoins,
-    spendCoins
+    spendCoins,
+    sendVerificationEmail,
+    verifyEmail,
+    resetPassword,
+    changePassword
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
