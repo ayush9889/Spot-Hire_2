@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Users, Briefcase, TrendingUp, MapPin, Star, ChevronRight, Clock, Shield, ArrowRight, Plus, MessageCircle, Coins } from 'lucide-react';
+import { Search, Users, Briefcase, TrendingUp, MapPin, Star, ChevronRight, Clock, Shield, ArrowRight, Plus, MessageCircle, Coins, ChevronLeft } from 'lucide-react';
 import AllCategories from '../jobs/AllCategories';
 import NearbyJobs from '../jobs/NearbyJobs';
 import { JobCategory } from '../../types';
@@ -14,6 +14,16 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ onOpenAuthModal, onShowDashboard }) => {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Auto-slide functionality
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev === 4 ? 0 : prev + 1));
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
   
   const handleCategorySelect = (category: JobCategory) => {
     // In a real app, this would filter jobs by category
@@ -160,159 +170,303 @@ const Hero: React.FC<HeroProps> = ({ onOpenAuthModal, onShowDashboard }) => {
               </div>
             </div>
             
-            <div className="relative space-y-6">
-              {/* Live Stats Cards */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Active Jobs</p>
-                      <p className="text-2xl font-bold text-blue-600">24,847</p>
-                      <p className="text-xs text-green-600">+12% this week</p>
+            <div className="relative">
+              {/* Professional Sliding Carousel */}
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+                  {/* Slide 1: Live Stats Dashboard */}
+                  <div className="w-full flex-shrink-0 p-6 bg-gradient-to-br from-blue-50 to-indigo-100">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">📊 Live Platform Stats</h3>
+                      <p className="text-gray-600 text-sm">Real-time performance metrics</p>
                     </div>
-                    <div className="p-3 bg-blue-100 rounded-lg">
-                      <Briefcase className="h-6 w-6 text-blue-600" />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Active Jobs</p>
+                            <p className="text-2xl font-bold text-blue-600">24,847</p>
+                            <p className="text-xs text-green-600">+12% this week</p>
+                          </div>
+                          <div className="p-2 bg-blue-100 rounded-lg">
+                            <Briefcase className="h-5 w-5 text-blue-600" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Hired Today</p>
+                            <p className="text-2xl font-bold text-green-600">1,247</p>
+                            <p className="text-xs text-green-600">+8% vs yesterday</p>
+                          </div>
+                          <div className="p-2 bg-green-100 rounded-lg">
+                            <Users className="h-5 w-5 text-green-600" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Success Rate</p>
+                            <p className="text-2xl font-bold text-purple-600">95.2%</p>
+                            <p className="text-xs text-green-600">+2.1% this month</p>
+                          </div>
+                          <div className="p-2 bg-purple-100 rounded-lg">
+                            <TrendingUp className="h-5 w-5 text-purple-600" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Cities Active</p>
+                            <p className="text-2xl font-bold text-orange-600">487</p>
+                            <p className="text-xs text-green-600">+15 new this week</p>
+                          </div>
+                          <div className="p-2 bg-orange-100 rounded-lg">
+                            <MapPin className="h-5 w-5 text-orange-600" />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Hired Today</p>
-                      <p className="text-2xl font-bold text-green-600">1,247</p>
-                      <p className="text-xs text-green-600">+8% vs yesterday</p>
-                    </div>
-                    <div className="p-3 bg-green-100 rounded-lg">
-                      <Users className="h-6 w-6 text-green-600" />
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Trending WhatsApp Feature */}
-              <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
-                      <MessageCircle className="h-6 w-6" />
+                  {/* Slide 2: WhatsApp Integration Demo */}
+                  <div className="w-full flex-shrink-0 p-6 bg-gradient-to-br from-green-50 to-emerald-100">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">💬 WhatsApp Integration</h3>
+                      <p className="text-gray-600 text-sm">Instant job applications via WhatsApp</p>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-lg">Apply via WhatsApp</h3>
-                      <p className="text-green-100 text-sm">Instant job applications</p>
+                    <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg mb-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center">
+                          <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
+                            <MessageCircle className="h-6 w-6" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg">Apply via WhatsApp</h3>
+                            <p className="text-green-100 text-sm">Instant job applications</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold">89%</div>
+                          <div className="text-green-100 text-xs">Success Rate</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm">
+                          <span className="font-medium">2,847</span> applications sent today
+                        </div>
+                        <button className="bg-white text-green-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors">
+                          Try Now
+                        </button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 text-center">
+                      <div className="bg-white rounded-lg p-3">
+                        <div className="text-lg font-bold text-green-600">⚡</div>
+                        <div className="text-xs text-gray-600">Instant Apply</div>
+                      </div>
+                      <div className="bg-white rounded-lg p-3">
+                        <div className="text-lg font-bold text-green-600">📱</div>
+                        <div className="text-xs text-gray-600">Mobile First</div>
+                      </div>
+                      <div className="bg-white rounded-lg p-3">
+                        <div className="text-lg font-bold text-green-600">✅</div>
+                        <div className="text-xs text-gray-600">Verified</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold">89%</div>
-                    <div className="text-green-100 text-xs">Success Rate</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <span className="font-medium">2,847</span> applications sent today
-                  </div>
-                  <button className="bg-white text-green-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors">
-                    Try Now
-                  </button>
-                </div>
-              </div>
 
-              {/* Hot Job Alert */}
-              <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
-                      <TrendingUp className="h-6 w-6" />
+                  {/* Slide 3: Trending Jobs & Salaries */}
+                  <div className="w-full flex-shrink-0 p-6 bg-gradient-to-br from-orange-50 to-red-100">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">🔥 Trending Jobs</h3>
+                      <p className="text-gray-600 text-sm">High demand positions with top salaries</p>
                     </div>
-                    <div>
-                      <h3 className="font-semibold">🔥 Hot Job Alert</h3>
-                      <p className="text-orange-100 text-sm">High demand positions</p>
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6 text-white shadow-lg mb-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center">
+                          <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
+                            <TrendingUp className="h-6 w-6" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Hot Job Alert</h3>
+                            <p className="text-orange-100 text-sm">High demand positions</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full">
+                            LIVE
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>🚚 Delivery Partners</span>
+                          <span className="font-medium">₹25,000+</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span>🍽️ Restaurant Staff</span>
+                          <span className="font-medium">₹18,000+</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span>🛍️ Retail Associates</span>
+                          <span className="font-medium">₹20,000+</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span>🏨 Hotel Staff</span>
+                          <span className="font-medium">₹22,000+</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 shadow-lg">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600 mb-2">₹15,000 - ₹35,000</div>
+                        <div className="text-sm text-gray-600">Average Monthly Salary Range</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs bg-white bg-opacity-20 px-2 py-1 rounded-full">
-                      LIVE
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Delivery Partners</span>
-                    <span className="font-medium">₹25,000+</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Restaurant Staff</span>
-                    <span className="font-medium">₹18,000+</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Retail Associates</span>
-                    <span className="font-medium">₹20,000+</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Success Stories */}
-              <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                <div className="flex items-center mb-4">
-                  <div className="p-2 bg-purple-100 rounded-lg mr-3">
-                    <Star className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Success Stories</h3>
-                    <p className="text-gray-600 text-sm">Real people, real jobs</p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 text-xs font-medium">RK</span>
+                  {/* Slide 4: Success Stories & Testimonials */}
+                  <div className="w-full flex-shrink-0 p-6 bg-gradient-to-br from-purple-50 to-indigo-100">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">⭐ Success Stories</h3>
+                      <p className="text-gray-600 text-sm">Real people, real success stories</p>
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">Rajesh Kumar</p>
-                      <p className="text-xs text-gray-600">Hired as Delivery Partner • ₹28,000/month</p>
+                    <div className="space-y-4">
+                      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 text-sm font-medium">RK</span>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900">Rajesh Kumar</p>
+                            <p className="text-xs text-gray-600">Hired as Delivery Partner • ₹28,000/month</p>
+                            <p className="text-xs text-green-600">2 days ago</p>
+                          </div>
+                          <div className="text-right">
+                            <div className="flex items-center text-yellow-500">
+                              <Star className="h-4 w-4 fill-current" />
+                              <span className="text-xs ml-1">4.9</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <span className="text-green-600 text-sm font-medium">PS</span>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900">Priya Sharma</p>
+                            <p className="text-xs text-gray-600">Hired as Retail Associate • ₹22,000/month</p>
+                            <p className="text-xs text-green-600">1 week ago</p>
+                          </div>
+                          <div className="text-right">
+                            <div className="flex items-center text-yellow-500">
+                              <Star className="h-4 w-4 fill-current" />
+                              <span className="text-xs ml-1">4.8</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                            <span className="text-purple-600 text-sm font-medium">AP</span>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-900">Amit Patel</p>
+                            <p className="text-xs text-gray-600">Hired as Electrician • ₹32,000/month</p>
+                            <p className="text-xs text-green-600">3 days ago</p>
+                          </div>
+                          <div className="text-right">
+                            <div className="flex items-center text-yellow-500">
+                              <Star className="h-4 w-4 fill-current" />
+                              <span className="text-xs ml-1">5.0</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-xs text-green-600">2 days ago</div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 text-xs font-medium">PS</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">Priya Sharma</p>
-                      <p className="text-xs text-gray-600">Hired as Retail Associate • ₹22,000/month</p>
-                    </div>
-                    <div className="text-xs text-green-600">1 week ago</div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Coin System Promo */}
-              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
-                      <Coins className="h-6 w-6" />
+                  {/* Slide 5: Coin System & Rewards */}
+                  <div className="w-full flex-shrink-0 p-6 bg-gradient-to-br from-yellow-50 to-orange-100">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">🪙 Coin Rewards System</h3>
+                      <p className="text-gray-600 text-sm">Earn coins, unlock premium features</p>
                     </div>
-                    <div>
-                      <h3 className="font-semibold">Earn Coins Daily</h3>
-                      <p className="text-yellow-100 text-sm">Unlock premium features</p>
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-6 text-white shadow-lg mb-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center">
+                          <div className="p-2 bg-white bg-opacity-20 rounded-lg mr-3">
+                            <Coins className="h-6 w-6" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Earn Coins Daily</h3>
+                            <p className="text-yellow-100 text-sm">Unlock premium features</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                          <div className="text-lg font-bold">+5</div>
+                          <div className="text-xs text-yellow-100">Daily Login</div>
+                        </div>
+                        <div>
+                          <div className="text-lg font-bold">+10</div>
+                          <div className="text-xs text-yellow-100">Profile Complete</div>
+                        </div>
+                        <div>
+                          <div className="text-lg font-bold">+15</div>
+                          <div className="text-xs text-yellow-100">Refer Friends</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold text-orange-600">🔓</div>
+                        <div className="text-xs text-gray-600">Unlock Contacts</div>
+                      </div>
+                      <div className="bg-white rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold text-orange-600">⭐</div>
+                        <div className="text-xs text-gray-600">Premium Features</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-lg font-bold">+5</div>
-                    <div className="text-xs text-yellow-100">Daily Login</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold">+10</div>
-                    <div className="text-xs text-yellow-100">Profile Complete</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold">+15</div>
-                    <div className="text-xs text-yellow-100">Refer Friends</div>
-                  </div>
+
+                {/* Navigation Dots */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {[0, 1, 2, 3, 4].map((index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        currentSlide === index 
+                          ? 'bg-white shadow-lg scale-110' 
+                          : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+                      }`}
+                    />
+                  ))}
                 </div>
+
+                {/* Navigation Arrows */}
+                <button
+                  onClick={() => setCurrentSlide(currentSlide === 0 ? 4 : currentSlide - 1)}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white bg-opacity-90 rounded-full shadow-lg flex items-center justify-center hover:bg-opacity-100 transition-all duration-300"
+                >
+                  <ChevronLeft className="h-5 w-5 text-gray-700" />
+                </button>
+                <button
+                  onClick={() => setCurrentSlide(currentSlide === 4 ? 0 : currentSlide + 1)}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-white bg-opacity-90 rounded-full shadow-lg flex items-center justify-center hover:bg-opacity-100 transition-all duration-300"
+                >
+                  <ChevronRight className="h-5 w-5 text-gray-700" />
+                </button>
               </div>
             </div>
           </div>
