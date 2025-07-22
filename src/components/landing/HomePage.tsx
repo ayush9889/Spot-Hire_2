@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Search, MapPin, Users, ArrowRight, Star, Phone, MessageCircle, Shield, Clock, Zap, CheckCircle, Briefcase, TrendingUp, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import FeaturedWorkers from './FeaturedWorkers';
-import CreditPacks from './CreditPacks';
 import HowItWorks from './HowItWorks';
 import { getFeaturedCategories } from '../../lib/jobCategories';
 
@@ -276,132 +275,7 @@ const HomePage: React.FC<HomePageProps> = ({ onOpenAuthModal, onShowDashboard })
         </div>
       </section>
 
-      {/* For Employers Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-medium bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 mb-6 shadow-sm">
-              <Users className="h-4 w-4 mr-2" />
-              For Employers
-            </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              Find Skilled
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 block">
-                Local Workers
-              </span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Connect with verified workers in your area. From skilled trades to service staff, find reliable people for your business needs.
-            </p>
-          </div>
 
-          {/* Featured Workers Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {[
-              {
-                name: 'Rajesh Kumar',
-                skill: 'Electrician',
-                location: 'Mumbai, Maharashtra',
-                rating: 4.8,
-                experience: '5 years',
-                image: '👨‍🔧'
-              },
-              {
-                name: 'Priya Sharma',
-                skill: 'Housekeeper',
-                location: 'Delhi, NCR',
-                rating: 4.9,
-                experience: '3 years',
-                image: '👩‍💼'
-              },
-              {
-                name: 'Amit Patel',
-                skill: 'Driver',
-                location: 'Bangalore, Karnataka',
-                rating: 4.7,
-                experience: '8 years',
-                image: '👨‍💼'
-              },
-              {
-                name: 'Sunita Devi',
-                skill: 'Cook',
-                location: 'Chennai, Tamil Nadu',
-                rating: 4.9,
-                experience: '6 years',
-                image: '👩‍🍳'
-              }
-            ].map((worker, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div className="text-center mb-4">
-                  <div className="text-4xl mb-3">{worker.image}</div>
-                  <h3 className="font-bold text-gray-900 text-lg">{worker.name}</h3>
-                  <p className="text-blue-600 font-semibold">{worker.skill}</p>
-                </div>
-                
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    {worker.location}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Star className="h-4 w-4 mr-2 text-yellow-500" />
-                    {worker.rating} ({worker.experience})
-                  </div>
-                </div>
-                
-                <button
-                  onClick={() => document.getElementById('featured-workers')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold"
-                >
-                  View Profile
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* View All Workers Button */}
-          <div className="text-center">
-            <button
-              onClick={() => document.getElementById('featured-workers')?.scrollIntoView({ behavior: 'smooth' })}
-              className="group inline-flex items-center px-10 py-5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-bold text-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-            >
-              <Users className="h-6 w-6 mr-3" />
-              Browse All Workers
-              <ChevronRight className="h-6 w-6 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
-            </button>
-            <p className="text-gray-600 text-sm mt-4">
-              Find electricians, drivers, cooks, cleaners, security guards, and many more skilled workers
-            </p>
-          </div>
-
-          {/* Employer Benefits */}
-          <div className="mt-16 bg-gradient-to-r from-green-50 to-emerald-50 rounded-3xl p-12">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <div>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Workers</h3>
-                <p className="text-gray-600">All workers are background checked</p>
-              </div>
-              <div>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Quick Hiring</h3>
-                <p className="text-gray-600">Connect and hire within hours</p>
-              </div>
-              <div>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Local Focus</h3>
-                <p className="text-gray-600">Workers from your neighborhood</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Featured Workers Grid */}
       <FeaturedWorkers />
@@ -409,8 +283,7 @@ const HomePage: React.FC<HomePageProps> = ({ onOpenAuthModal, onShowDashboard })
       {/* How It Works Section */}
       <HowItWorks />
 
-      {/* Credit Packs Section */}
-      <CreditPacks />
+
 
       {/* Job Seeker Join CTA */}
       <section className="py-20 bg-gradient-to-r from-blue-600 via-blue-700 to-teal-600">

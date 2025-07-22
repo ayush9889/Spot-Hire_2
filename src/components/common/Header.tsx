@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useCoinWallet } from '../../contexts/CoinWalletContext';
 import { Menu, X, User, LogOut, Briefcase, Search, Coins, Settings, HelpCircle } from 'lucide-react';
 import BuyCreditsModal from '../modals/BuyCreditsModal';
+import AuthModal from '../auth/AuthModal';
 import { formatCurrency } from '../../lib/utils';
 
 interface HeaderProps {
@@ -15,6 +16,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
   const { getBalance } = useCoinWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showBuyCredits, setShowBuyCredits] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const location = useLocation();
 
   const handleLogout = () => {
@@ -158,7 +160,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                     About
                   </Link>
                   <button
-                    onClick={() => {/* Open auth modal */}}
+                    onClick={() => setShowAuthModal(true)}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     Login / Signup
@@ -277,7 +279,7 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
                       About
                     </Link>
                     <button
-                      onClick={() => {/* Open auth modal */ setIsMenuOpen(false);}}
+                      onClick={() => { setShowAuthModal(true); setIsMenuOpen(false); }}
                       className="text-left bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
                       Login / Signup
@@ -293,6 +295,11 @@ const Header: React.FC<HeaderProps> = ({ onShowDashboard }) => {
       <BuyCreditsModal
         isOpen={showBuyCredits}
         onClose={() => setShowBuyCredits(false)}
+      />
+      
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
       />
     </>
   );
