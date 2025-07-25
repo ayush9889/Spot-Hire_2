@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, AuthState, Employer, JobSeeker } from '../types';
+import { AuthService, UserProfile } from '../lib/firebase';
+import { User as FirebaseUser } from 'firebase/auth';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   register: (userData: Partial<User>) => Promise<void>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
@@ -24,66 +27,51 @@ export const useAuth = () => {
   return context;
 };
 
+// Convert UserProfile to User type
+const convertUserProfileToUser = (profile: UserProfile): User => {
+  if (profile.role === 'employer') {
+    return {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      role: profile.role,
+      phone: profile.phone,
+      location: profile.location,
+      createdAt: profile.createdAt,
+      isVerified: profile.isVerified,
+      coins: profile.coins,
+      businessName: profile.businessName || '',
+      businessType: profile.businessType || '',
+      website: profile.website || '',
+      description: profile.description || '',
+      hideContactInfo: profile.hideContactInfo || true,
+      maskedBusinessName: profile.maskedBusinessName || ''
+    } as Employer;
+  } else {
+    return {
+      id: profile.id,
+      email: profile.email,
+      name: profile.name,
+      role: profile.role,
+      phone: profile.phone,
+      location: profile.location,
+      createdAt: profile.createdAt,
+      isVerified: profile.isVerified,
+      coins: profile.coins,
+      skills: profile.skills || [],
+      experience: profile.experience || '',
+      preferredJobTypes: profile.preferredJobTypes || ['full-time'],
+      availability: profile.availability || 'Immediate',
+      preferredCategories: profile.preferredCategories || ['retail'],
+      aboutMe: profile.aboutMe || '',
+      profilePhoto: profile.profilePhoto || ''
+    } as JobSeeker;
+  }
+};
+
 interface AuthProviderProps {
   children: ReactNode;
 }
-
-// Enhanced mock data with more realistic user profiles
-const mockUsers: (Employer | JobSeeker)[] = [
-  {
-    id: '1',
-    email: 'employer@example.com',
-    name: 'Ramesh Gupta',
-    role: 'employer',
-    phone: '+91 9876543210',
-    location: { city: 'Mumbai', state: 'Maharashtra', pincode: '400001' },
-    createdAt: new Date('2024-01-15'),
-    isVerified: true,
-    coins: 50,
-    businessName: 'Fashion Hub Store',
-    businessType: 'Retail Clothing',
-    website: 'https://fashionhub.com',
-    description: 'Leading fashion retail store in Andheri',
-    hideContactInfo: true,
-    maskedBusinessName: 'Fashion H*** Store'
-  },
-  {
-    id: '2',
-    email: 'jobseeker@example.com',
-    name: 'Priya Sharma',
-    role: 'jobseeker',
-    phone: '+91 9876543211',
-    location: { city: 'Mumbai', state: 'Maharashtra', pincode: '400058' },
-    createdAt: new Date('2024-02-01'),
-    isVerified: true,
-    coins: 25,
-    skills: ['Customer Service', 'Basic English', 'Retail Experience', 'Cash Handling'],
-    experience: '2 years in retail',
-    preferredJobTypes: ['full-time', 'part-time'],
-    availability: 'Weekdays and Weekends',
-    preferredCategories: ['retail', 'food-service'],
-    aboutMe: 'Hardworking individual with 2 years of retail experience. Looking for stable employment in customer service roles.',
-    profilePhoto: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
-  },
-  {
-    id: '3',
-    email: 'driver@example.com',
-    name: 'Rajesh Kumar',
-    role: 'jobseeker',
-    phone: '+91 9876543212',
-    location: { city: 'Delhi', state: 'Delhi', pincode: '110001' },
-    createdAt: new Date('2024-01-20'),
-    isVerified: true,
-    coins: 15,
-    skills: ['Driving', 'Navigation', 'Customer Service', 'Vehicle Maintenance'],
-    experience: '3 years as delivery driver',
-    preferredJobTypes: ['full-time', 'gig'],
-    availability: 'Flexible hours',
-    preferredCategories: ['delivery', 'driving'],
-    aboutMe: 'Experienced driver with clean record. Own vehicle available for delivery work.',
-    profilePhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
-  }
-];
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>({
@@ -93,58 +81,73 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    // Check for stored user session
-    const storedUser = localStorage.getItem('user');
-    const sessionTimestamp = localStorage.getItem('userSessionTimestamp');
-    
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        // Check if session is still valid (7 days)
-        const sessionAge = Date.now() - parseInt(sessionTimestamp || '0');
-        const sessionValid = sessionAge < 7 * 24 * 60 * 60 * 1000; // 7 days
-        
-        if (sessionValid) {
+    // Listen for Firebase auth state changes
+    const unsubscribe = AuthService.onAuthStateChanged(async (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        try {
+          // Get user profile from Firestore
+          const userProfile = await AuthService.getUserProfile(firebaseUser.uid);
+          if (userProfile) {
+            const user = convertUserProfileToUser(userProfile);
+            setAuthState({
+              user,
+              isAuthenticated: true,
+              loading: false
+            });
+          } else {
+            // User exists in Firebase Auth but not in Firestore
+            setAuthState({
+              user: null,
+              isAuthenticated: false,
+              loading: false
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
           setAuthState({
-            user,
-            isAuthenticated: true,
+            user: null,
+            isAuthenticated: false,
             loading: false
           });
-        } else {
-          // Session expired, clear storage
-          localStorage.removeItem('user');
-          localStorage.removeItem('userSessionTimestamp');
-          setAuthState(prev => ({ ...prev, loading: false }));
         }
-      } catch (error) {
-        // Clear corrupted session
-        localStorage.removeItem('user');
-        localStorage.removeItem('userSessionTimestamp');
-        setAuthState(prev => ({ ...prev, loading: false }));
+      } else {
+        // User is signed out
+        setAuthState({
+          user: null,
+          isAuthenticated: false,
+          loading: false
+        });
       }
-    } else {
-      setAuthState(prev => ({ ...prev, loading: false }));
-    }
+    });
+
+    // Cleanup subscription
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
     setAuthState(prev => ({ ...prev, loading: true }));
     
     try {
-      // Mock login logic with email validation
-      const user = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      const userProfile = await AuthService.signIn(email, password);
+      const user = convertUserProfileToUser(userProfile);
       
-      if (!user) {
-        throw new Error('No account found with this email address');
-      }
-      
-      if (password !== 'password') {
-        throw new Error('Incorrect password');
-      }
+      setAuthState({
+        user,
+        isAuthenticated: true,
+        loading: false
+      });
+    } catch (error) {
+      setAuthState(prev => ({ ...prev, loading: false }));
+      throw error;
+    }
+  };
 
-      // Store user session
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('userSessionTimestamp', Date.now().toString());
+  const loginWithGoogle = async () => {
+    setAuthState(prev => ({ ...prev, loading: true }));
+    
+    try {
+      const userProfile = await AuthService.signInWithGoogle();
+      const user = convertUserProfileToUser(userProfile);
       
       setAuthState({
         user,
@@ -161,56 +164,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAuthState(prev => ({ ...prev, loading: true }));
     
     try {
-      // Check if email already exists
-      const existingUser = mockUsers.find(u => u.email.toLowerCase() === userData.email?.toLowerCase());
-      if (existingUser) {
-        throw new Error('An account with this email already exists');
-      }
-
-      // Create new user based on role
-      let newUser: User;
+      // Extract email and password for Firebase auth
+      const { email, password, ...profileData } = userData as any;
       
-      if (userData.role === 'employer') {
-        newUser = {
-          id: Math.random().toString(36).substr(2, 9),
-          email: userData.email || '',
-          name: userData.name || '',
-          role: 'employer',
-          phone: userData.phone || '',
-          location: userData.location || { city: '', state: '', pincode: '' },
-          createdAt: new Date(),
-          isVerified: false,
-          coins: 20, // Welcome bonus for employers
-          businessName: '',
-          businessType: '',
-          hideContactInfo: true,
-          maskedBusinessName: ''
-        } as Employer;
-      } else {
-        newUser = {
-          id: Math.random().toString(36).substr(2, 9),
-          email: userData.email || '',
-          name: userData.name || '',
-          role: 'jobseeker',
-          phone: userData.phone || '',
-          location: userData.location || { city: '', state: '', pincode: '' },
-          createdAt: new Date(),
-          isVerified: false,
-          coins: 10, // Welcome bonus for job seekers
-          skills: [],
-          experience: '',
-          preferredJobTypes: ['full-time'],
-          availability: 'Immediate',
-          preferredCategories: ['retail']
-        } as JobSeeker;
+      if (!email || !password) {
+        throw new Error('Email and password are required');
       }
 
-      // Store user session
-      localStorage.setItem('user', JSON.stringify(newUser));
-      localStorage.setItem('userSessionTimestamp', Date.now().toString());
+      const userProfile = await AuthService.register(email, password, profileData);
+      const user = convertUserProfileToUser(userProfile);
       
       setAuthState({
-        user: newUser,
+        user,
         isAuthenticated: true,
         loading: false
       });
@@ -220,81 +185,107 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('userSessionTimestamp');
-    setAuthState({
-      user: null,
-      isAuthenticated: false,
-      loading: false
-    });
+  const logout = async () => {
+    try {
+      await AuthService.signOut();
+      setAuthState({
+        user: null,
+        isAuthenticated: false,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still clear local state even if Firebase logout fails
+      setAuthState({
+        user: null,
+        isAuthenticated: false,
+        loading: false
+      });
+    }
   };
 
   const updateProfile = async (data: Partial<User>) => {
     if (authState.user) {
-      const updatedUser = { ...authState.user, ...data };
-      // Update stored session
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      localStorage.setItem('userSessionTimestamp', Date.now().toString());
-      setAuthState(prev => ({ ...prev, user: updatedUser }));
+      try {
+        await AuthService.updateProfile(authState.user.id, data);
+        
+        // Update local state
+        const updatedUser = { ...authState.user, ...data };
+        setAuthState(prev => ({ ...prev, user: updatedUser }));
+      } catch (error) {
+        throw error;
+      }
     }
   };
 
   const addCoins = async (amount: number) => {
     if (authState.user) {
-      const updatedUser = { ...authState.user, coins: authState.user.coins + amount };
-      // Update stored session
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      localStorage.setItem('userSessionTimestamp', Date.now().toString());
-      setAuthState(prev => ({ ...prev, user: updatedUser }));
+      try {
+        await AuthService.addCoins(authState.user.id, amount);
+        
+        // Update local state
+        const updatedUser = { ...authState.user, coins: authState.user.coins + amount };
+        setAuthState(prev => ({ ...prev, user: updatedUser }));
+      } catch (error) {
+        throw error;
+      }
     }
   };
 
   const spendCoins = async (amount: number) => {
     if (authState.user && authState.user.coins >= amount) {
-      const updatedUser = { ...authState.user, coins: authState.user.coins - amount };
-      // Update stored session
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      localStorage.setItem('userSessionTimestamp', Date.now().toString());
-      setAuthState(prev => ({ ...prev, user: updatedUser }));
+      try {
+        const success = await AuthService.spendCoins(authState.user.id, amount);
+        if (success) {
+          // Update local state
+          const updatedUser = { ...authState.user, coins: authState.user.coins - amount };
+          setAuthState(prev => ({ ...prev, user: updatedUser }));
+        } else {
+          throw new Error('Insufficient coins');
+        }
+      } catch (error) {
+        throw error;
+      }
     } else {
       throw new Error('Insufficient coins');
     }
   };
 
   const sendVerificationEmail = async (email: string) => {
-    // Mock email verification
-    console.log(`Verification email sent to ${email}`);
+    // This would be handled by Firebase automatically during registration
+    // For manual sending, we'd need to implement it
+    console.log(`Verification email would be sent to ${email}`);
     return Promise.resolve();
   };
 
   const verifyEmail = async (token: string) => {
+    // Email verification is handled by Firebase
+    // This would be called when user clicks verification link
     if (authState.user) {
       const updatedUser = { ...authState.user, isVerified: true };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
       setAuthState(prev => ({ ...prev, user: updatedUser }));
     }
     return Promise.resolve();
   };
 
   const resetPassword = async (email: string) => {
-    // Mock password reset
-    console.log(`Password reset email sent to ${email}`);
-    return Promise.resolve();
+    try {
+      await AuthService.resetPassword(email);
+    } catch (error) {
+      throw error;
+    }
   };
 
   const changePassword = async (oldPassword: string, newPassword: string) => {
-    // Mock password change
-    if (oldPassword !== 'password') {
-      throw new Error('Current password is incorrect');
-    }
-    console.log('Password changed successfully');
-    return Promise.resolve();
+    // This would require re-authentication with Firebase
+    // For now, we'll throw an error indicating it's not implemented
+    throw new Error('Password change not implemented yet');
   };
 
   const value: AuthContextType = {
     ...authState,
     login,
+    loginWithGoogle,
     register,
     logout,
     updateProfile,

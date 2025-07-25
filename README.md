@@ -29,8 +29,8 @@ A comprehensive job marketplace platform focused on blue-collar jobs, connecting
 - **Frontend**: React 18 + TypeScript + Vite
 - **Styling**: Tailwind CSS + Framer Motion
 - **State Management**: React Context API
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
+- **Database**: Firebase Firestore
+- **Authentication**: Firebase Auth (Email/Password + Google OAuth)
 - **Payments**: Razorpay Integration
 - **Deployment**: Netlify/Vercel Ready
 
@@ -49,9 +49,9 @@ cd spothire
 
 3. **Set up environment variables**
    ```bash
-   cp .env.example .env
+   cp env.example .env
    ```
-   Fill in your Supabase and other service credentials.
+   Fill in your Firebase and other service credentials. See [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) for detailed setup instructions.
 
 4. **Start development server**
    ```bash
@@ -60,7 +60,7 @@ cd spothire
 
 ## 🗄 Database Setup
 
-The application uses Supabase as the backend. Set up your database with the following tables:
+The application uses Firebase Firestore as the backend. Follow the [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) guide to set up your Firebase project and database.
 
 ### Users Table
 ```sql
@@ -113,9 +113,19 @@ CREATE TABLE applications (
 Create a `.env` file with the following variables:
 
 ```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Firebase Configuration
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+# Payment Gateway
 VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
+
+# Analytics
 VITE_GOOGLE_ANALYTICS_ID=your_ga_id
 ```
 

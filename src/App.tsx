@@ -15,6 +15,12 @@ import JobListingsPage from './pages/JobListingsPage';
 import WorkersPage from './pages/WorkersPage';
 import WhatsAppDemoPage from './pages/WhatsAppDemoPage';
 import OfflineIndicator from './components/features/OfflineIndicator';
+import FirebaseDebug from './components/debug/FirebaseDebug';
+
+// Import Firebase test (will run in development)
+if (import.meta.env.DEV) {
+  import('./lib/firebase.test');
+}
 
 const AppContent: React.FC = () => {
   const { user } = useAuth();
@@ -42,6 +48,9 @@ const AppContent: React.FC = () => {
 
   return (
     <Layout>
+      {/* Debug component - remove this after fixing the issue */}
+      {import.meta.env.DEV && <FirebaseDebug />}
+      
       <Routes>
         <Route path="/" element={
           <HomePage 
